@@ -25,77 +25,99 @@ class Ui_Widget
 {
 public:
     QVBoxLayout *verticalLayout_2;
-    QWidget *widget_3;
-    QHBoxLayout *horizontalLayout;
     QWidget *widget;
-    QVBoxLayout *verticalLayout;
-    QPushButton *pushButton;
-    QPushButton *pushButton_2;
-    QPushButton *pushButton_3;
-    QPushButton *pushButton_4;
-    QPushButton *pushButton_5;
+    QWidget *widget1;
+    QHBoxLayout *horizontalLayout;
     QWidget *widget_2;
+    QWidget *widget2;
+    QVBoxLayout *verticalLayout;
+    QPushButton *difButton;
+    QPushButton *staButton;
+    QPushButton *recButton;
+    QPushButton *setButton;
+    QPushButton *exiButton;
+    QWidget *widget_3;
 
     void setupUi(QWidget *Widget)
     {
         if (Widget->objectName().isEmpty())
             Widget->setObjectName(QStringLiteral("Widget"));
         Widget->resize(1600, 900);
+        Widget->setMaximumSize(QSize(1618, 1052));
         verticalLayout_2 = new QVBoxLayout(Widget);
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
-        widget_3 = new QWidget(Widget);
-        widget_3->setObjectName(QStringLiteral("widget_3"));
-
-        verticalLayout_2->addWidget(widget_3);
-
-        horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         widget = new QWidget(Widget);
         widget->setObjectName(QStringLiteral("widget"));
 
-        horizontalLayout->addWidget(widget);
+        verticalLayout_2->addWidget(widget);
 
-        verticalLayout = new QVBoxLayout();
-        verticalLayout->setSpacing(6);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        pushButton = new QPushButton(Widget);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-
-        verticalLayout->addWidget(pushButton);
-
-        pushButton_2 = new QPushButton(Widget);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
-
-        verticalLayout->addWidget(pushButton_2);
-
-        pushButton_3 = new QPushButton(Widget);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
-
-        verticalLayout->addWidget(pushButton_3);
-
-        pushButton_4 = new QPushButton(Widget);
-        pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
-
-        verticalLayout->addWidget(pushButton_4);
-
-        pushButton_5 = new QPushButton(Widget);
-        pushButton_5->setObjectName(QStringLiteral("pushButton_5"));
-
-        verticalLayout->addWidget(pushButton_5);
-
-
-        horizontalLayout->addLayout(verticalLayout);
-
-        widget_2 = new QWidget(Widget);
+        widget1 = new QWidget(Widget);
+        widget1->setObjectName(QStringLiteral("widget1"));
+        horizontalLayout = new QHBoxLayout(widget1);
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        widget_2 = new QWidget(widget1);
         widget_2->setObjectName(QStringLiteral("widget_2"));
 
         horizontalLayout->addWidget(widget_2);
 
+        widget2 = new QWidget(widget1);
+        widget2->setObjectName(QStringLiteral("widget2"));
+        verticalLayout = new QVBoxLayout(widget2);
+        verticalLayout->setSpacing(6);
+        verticalLayout->setContentsMargins(11, 11, 11, 11);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        difButton = new QPushButton(widget2);
+        difButton->setObjectName(QStringLiteral("difButton"));
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(difButton->sizePolicy().hasHeightForWidth());
+        difButton->setSizePolicy(sizePolicy);
 
-        verticalLayout_2->addLayout(horizontalLayout);
+        verticalLayout->addWidget(difButton);
+
+        staButton = new QPushButton(widget2);
+        staButton->setObjectName(QStringLiteral("staButton"));
+        sizePolicy.setHeightForWidth(staButton->sizePolicy().hasHeightForWidth());
+        staButton->setSizePolicy(sizePolicy);
+
+        verticalLayout->addWidget(staButton);
+
+        recButton = new QPushButton(widget2);
+        recButton->setObjectName(QStringLiteral("recButton"));
+        sizePolicy.setHeightForWidth(recButton->sizePolicy().hasHeightForWidth());
+        recButton->setSizePolicy(sizePolicy);
+
+        verticalLayout->addWidget(recButton);
+
+        setButton = new QPushButton(widget2);
+        setButton->setObjectName(QStringLiteral("setButton"));
+        sizePolicy.setHeightForWidth(setButton->sizePolicy().hasHeightForWidth());
+        setButton->setSizePolicy(sizePolicy);
+
+        verticalLayout->addWidget(setButton);
+
+        exiButton = new QPushButton(widget2);
+        exiButton->setObjectName(QStringLiteral("exiButton"));
+        sizePolicy.setHeightForWidth(exiButton->sizePolicy().hasHeightForWidth());
+        exiButton->setSizePolicy(sizePolicy);
+
+        verticalLayout->addWidget(exiButton);
+
+
+        horizontalLayout->addWidget(widget2);
+
+        widget_3 = new QWidget(widget1);
+        widget_3->setObjectName(QStringLiteral("widget_3"));
+
+        horizontalLayout->addWidget(widget_3);
+
+
+        verticalLayout_2->addWidget(widget1);
 
 
         retranslateUi(Widget);
@@ -106,11 +128,11 @@ public:
     void retranslateUi(QWidget *Widget)
     {
         Widget->setWindowTitle(QApplication::translate("Widget", "Widget", Q_NULLPTR));
-        pushButton->setText(QApplication::translate("Widget", "PushButton", Q_NULLPTR));
-        pushButton_2->setText(QApplication::translate("Widget", "PushButton", Q_NULLPTR));
-        pushButton_3->setText(QApplication::translate("Widget", "PushButton", Q_NULLPTR));
-        pushButton_4->setText(QApplication::translate("Widget", "PushButton", Q_NULLPTR));
-        pushButton_5->setText(QApplication::translate("Widget", "PushButton", Q_NULLPTR));
+        difButton->setText(QApplication::translate("Widget", "Difficulty : easy", Q_NULLPTR));
+        staButton->setText(QApplication::translate("Widget", "Start", Q_NULLPTR));
+        recButton->setText(QApplication::translate("Widget", "Record", Q_NULLPTR));
+        setButton->setText(QApplication::translate("Widget", "Settings", Q_NULLPTR));
+        exiButton->setText(QApplication::translate("Widget", "Exit", Q_NULLPTR));
     } // retranslateUi
 
 };

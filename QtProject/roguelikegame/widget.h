@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include "gamepage.h"
-
 namespace Ui {
 class Widget;
 }
@@ -16,10 +15,20 @@ public:
     int getDif(){return dif;}
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
+protected:
+    void paintEvent(QPaintEvent *event);
+private slots:
+    void on_pushButton_released();
+
+    void on_difButton_released();
+
+    void on_exiButton_released();
+
+    void on_staButton_released();
 
 private:
-    GamePage g;
     int dif = 1;//难度选择
+    GamePage g;//游戏窗口实例化
     Ui::Widget *ui;
 };
 

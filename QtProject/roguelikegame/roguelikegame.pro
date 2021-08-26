@@ -26,13 +26,16 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        widget.cpp
+        widget.cpp \
+    gamepage.cpp
 
 HEADERS += \
-        widget.h
+        widget.h \
+    gamepage.h
 
 FORMS += \
-        widget.ui
+        widget.ui \
+    gamepage.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
