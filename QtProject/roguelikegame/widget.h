@@ -18,8 +18,6 @@ public:
 protected:
     void paintEvent(QPaintEvent *event);
 private slots:
-    void on_pushButton_released();
-
     void on_difButton_released();
 
     void on_exiButton_released();

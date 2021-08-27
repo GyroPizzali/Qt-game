@@ -21,8 +21,12 @@ protected:
 
 private:
     int mapCounter = 0;//用于决定下一关卡地图
+    int hp = 3;//人物血量
     int x = 0;//人物坐标
     int y = 600;//人物坐标
+    int pace = 40;//人物速度
+    int left_forward = 0;//左走动作帧
+    int right_forward = 0;//右走动作帧
     int dir = 0;//人物朝向， 右0左1
     Ui::GamePage *ui;
 };

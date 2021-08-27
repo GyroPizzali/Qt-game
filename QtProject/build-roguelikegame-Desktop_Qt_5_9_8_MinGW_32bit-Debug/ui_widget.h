@@ -25,11 +25,11 @@ class Ui_Widget
 {
 public:
     QVBoxLayout *verticalLayout_2;
+    QWidget *widget_4;
     QWidget *widget;
-    QWidget *widget1;
     QHBoxLayout *horizontalLayout;
     QWidget *widget_2;
-    QWidget *widget2;
+    QWidget *widget1;
     QVBoxLayout *verticalLayout;
     QPushButton *difButton;
     QPushButton *staButton;
@@ -48,29 +48,29 @@ public:
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+        widget_4 = new QWidget(Widget);
+        widget_4->setObjectName(QStringLiteral("widget_4"));
+
+        verticalLayout_2->addWidget(widget_4);
+
         widget = new QWidget(Widget);
         widget->setObjectName(QStringLiteral("widget"));
-
-        verticalLayout_2->addWidget(widget);
-
-        widget1 = new QWidget(Widget);
-        widget1->setObjectName(QStringLiteral("widget1"));
-        horizontalLayout = new QHBoxLayout(widget1);
+        horizontalLayout = new QHBoxLayout(widget);
         horizontalLayout->setSpacing(6);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        widget_2 = new QWidget(widget1);
+        widget_2 = new QWidget(widget);
         widget_2->setObjectName(QStringLiteral("widget_2"));
 
         horizontalLayout->addWidget(widget_2);
 
-        widget2 = new QWidget(widget1);
-        widget2->setObjectName(QStringLiteral("widget2"));
-        verticalLayout = new QVBoxLayout(widget2);
+        widget1 = new QWidget(widget);
+        widget1->setObjectName(QStringLiteral("widget1"));
+        verticalLayout = new QVBoxLayout(widget1);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        difButton = new QPushButton(widget2);
+        difButton = new QPushButton(widget1);
         difButton->setObjectName(QStringLiteral("difButton"));
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
@@ -80,28 +80,28 @@ public:
 
         verticalLayout->addWidget(difButton);
 
-        staButton = new QPushButton(widget2);
+        staButton = new QPushButton(widget1);
         staButton->setObjectName(QStringLiteral("staButton"));
         sizePolicy.setHeightForWidth(staButton->sizePolicy().hasHeightForWidth());
         staButton->setSizePolicy(sizePolicy);
 
         verticalLayout->addWidget(staButton);
 
-        recButton = new QPushButton(widget2);
+        recButton = new QPushButton(widget1);
         recButton->setObjectName(QStringLiteral("recButton"));
         sizePolicy.setHeightForWidth(recButton->sizePolicy().hasHeightForWidth());
         recButton->setSizePolicy(sizePolicy);
 
         verticalLayout->addWidget(recButton);
 
-        setButton = new QPushButton(widget2);
+        setButton = new QPushButton(widget1);
         setButton->setObjectName(QStringLiteral("setButton"));
         sizePolicy.setHeightForWidth(setButton->sizePolicy().hasHeightForWidth());
         setButton->setSizePolicy(sizePolicy);
 
         verticalLayout->addWidget(setButton);
 
-        exiButton = new QPushButton(widget2);
+        exiButton = new QPushButton(widget1);
         exiButton->setObjectName(QStringLiteral("exiButton"));
         sizePolicy.setHeightForWidth(exiButton->sizePolicy().hasHeightForWidth());
         exiButton->setSizePolicy(sizePolicy);
@@ -109,15 +109,15 @@ public:
         verticalLayout->addWidget(exiButton);
 
 
-        horizontalLayout->addWidget(widget2);
+        horizontalLayout->addWidget(widget1);
 
-        widget_3 = new QWidget(widget1);
+        widget_3 = new QWidget(widget);
         widget_3->setObjectName(QStringLiteral("widget_3"));
 
         horizontalLayout->addWidget(widget_3);
 
 
-        verticalLayout_2->addWidget(widget1);
+        verticalLayout_2->addWidget(widget);
 
 
         retranslateUi(Widget);
