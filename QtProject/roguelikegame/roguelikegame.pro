@@ -27,15 +27,24 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         widget.cpp \
-    gamepage.cpp
+    gamepage.cpp \
+    fireball.cpp \
+    monster.cpp \
+    item.cpp
 
 HEADERS += \
         widget.h \
-    gamepage.h
+    gamepage.h \
+    fireball.h \
+    monster.h \
+    item.h
 
 FORMS += \
         widget.ui \
     gamepage.ui
+
+CONFIG += C++11;
+
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

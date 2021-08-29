@@ -8,7 +8,7 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-
+    this->setWindowTitle("Sword and Magic");
     this->setStyleSheet("QLabel {"
                         "color : white;"//游戏标题颜色
                         "background-image : url();"//待定标题背景
@@ -20,7 +20,6 @@ Widget::Widget(QWidget *parent) :
                         "QPushButton::hover{"
                         "background-color: rgba(255, 255, 255, 255);"//边框颜色及透明度
                         "}");
-
 }
 
 Widget::~Widget()

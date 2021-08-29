@@ -43,7 +43,8 @@ public:
         if (Widget->objectName().isEmpty())
             Widget->setObjectName(QStringLiteral("Widget"));
         Widget->resize(1600, 900);
-        Widget->setMaximumSize(QSize(1618, 1052));
+        Widget->setMinimumSize(QSize(1600, 900));
+        Widget->setMaximumSize(QSize(1600, 900));
         verticalLayout_2 = new QVBoxLayout(Widget);
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
