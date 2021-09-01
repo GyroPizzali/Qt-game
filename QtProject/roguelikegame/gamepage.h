@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QVector>
 #include "fireball.h"
 #include "monster.h"
 #include "item.h"
@@ -13,23 +14,27 @@ class GamePage;
 class GamePage : public QWidget
 {
     Q_OBJECT
-
 public:
+    void setDif(int x){difficulty = x;};
     explicit GamePage(QWidget *parent = nullptr);
     ~GamePage();
-
 protected:
+    void onKeytimer();
+
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 
 private:
-    QTimer *paint_timer;
-    int difficulty = 0;//难度
+    QTimer *paint_timer;//重绘计时器
+    QTimer *key_timer;//遍历键盘计时器
+    QVector<Qt::Key> pressed_key;
     int mapCounter = 0;//用于决定下一关卡地图
-    int hp = 3 - difficulty;//人物血量
+    int difficulty = 0;//难度
+    int hp = 3;//人物血量
     int x = 0;//人物坐标
     int y = 700;//人物坐标
-    int pace = 40;//人物速度
+    int pace = 30;//人物速度
     bool attack = 0;//是否攻击
     fireball fb[20];//火球攻击
     int fireballCount = 0;//火球计数器

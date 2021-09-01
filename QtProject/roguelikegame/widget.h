@@ -12,7 +12,6 @@ class Widget : public QWidget
     Q_OBJECT
 
 public:
-    int getDif(){return dif;}
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
 protected:
@@ -23,10 +22,14 @@ private slots:
     void on_exiButton_released();
 
     void on_staButton_released();
-
 private:
     int dif = 1;//难度选择
     GamePage g;//游戏窗口实例化
+    friend class GamePage;
+    //传递主窗口的选择信息
+    void sendInf(){
+        g.setDif(dif - 1);//将难度传递给游戏界面
+    }
     Ui::Widget *ui;
 };
 

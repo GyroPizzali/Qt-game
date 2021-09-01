@@ -1,4 +1,5 @@
 #include "widget.h"
+#include "gamepage.h"
 #include "ui_widget.h"
 #include <QDebug>
 #include <QPainter>
@@ -56,5 +57,6 @@ void Widget::on_exiButton_released()
 void Widget::on_staButton_released()
 {
     g.show();
+    emit sendInf();
     this->hide();
 }
