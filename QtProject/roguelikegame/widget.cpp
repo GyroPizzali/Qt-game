@@ -21,6 +21,7 @@ Widget::Widget(QWidget *parent) :
                         "QPushButton::hover{"
                         "background-color: rgba(255, 255, 255, 255);"//边框颜色及透明度
                         "}");
+    connect(g,&GamePage::quitToMain,this,&Widget::returnToMain);
 }
 
 Widget::~Widget()
@@ -56,7 +57,19 @@ void Widget::on_exiButton_released()
 
 void Widget::on_staButton_released()
 {
-    g.show();
+    g->show();
     emit sendInf();
     this->hide();
 }
+
+void Widget::returnToMain()
+{
+    this->show();
+    g->hide();
+    //将实例化的对象删除后在申请空间实现游戏界面的刷新，就是不知道会不会有其他后果，
+    //目前只发现conne的信号会中断
+    delete g;
+    g = new GamePage;
+    connect(g,&GamePage::quitToMain,this,&Widget::returnToMain);
+}
+

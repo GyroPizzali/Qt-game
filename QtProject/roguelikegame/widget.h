@@ -24,11 +24,12 @@ private slots:
     void on_staButton_released();
 private:
     int dif = 1;//难度选择
-    GamePage g;//游戏窗口实例化
+    GamePage *g = new GamePage;//游戏窗口实例化
     friend class GamePage;
+    void returnToMain();//从游戏界面退回到主界面
     //传递主窗口的选择信息
     void sendInf(){
-        g.setDif(dif - 1);//将难度传递给游戏界面
+        g->setDif(dif - 1);//将难度传递给游戏界面
     }
     Ui::Widget *ui;
 };

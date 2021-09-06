@@ -9,6 +9,9 @@ public:
     int getX(){
         return fb_x;
     }
+    int getY(){
+        return fb_y;
+    }
     int getV(){
         return fb_v;
     }
@@ -17,6 +20,9 @@ public:
     }
     void setX(int a){
         fb_x = a;
+    }
+    void setY(int a){
+        fb_y = a;
     }
     void setV(int a){
         fb_v = a;
@@ -35,6 +41,7 @@ public:
     }
 private:
     int fb_x;
+    int fb_y;
     int fb_v;
     bool fb_dir;
     bool active = 0;

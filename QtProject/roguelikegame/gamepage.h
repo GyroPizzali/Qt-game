@@ -24,7 +24,8 @@ protected:
     void paintEvent(QPaintEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-
+signals:
+    void quitToMain();//返回主界面的信号
 private:
     QTimer *paint_timer;//重绘计时器
     QTimer *key_timer;//遍历键盘计时器
@@ -43,6 +44,7 @@ private:
     int dir = 0;//人物朝向， 右0左1
     Monster mon[50];//怪物
     Item item[50];//道具
+    void quitAndReset();//退回主界面并且重置游戏要素
     Ui::GamePage *ui;
 };
 

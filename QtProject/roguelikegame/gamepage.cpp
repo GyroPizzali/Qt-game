@@ -11,10 +11,10 @@ GamePage::GamePage(QWidget *parent) :
     ui(new Ui::GamePage)
 {
     ui->setupUi(this);
-    //按钮被按下时记录并启动定时器，没有按钮被按下是清楚容器并停止计时器，timeout对应函数中重复检查
-    //某按键是否处于被按下状态并修改对应参数，与直接在keyPressEvent中检查按钮事件相比，这样的方法
-    //还支持多个按键同时处于pressed状态下同时进行相应的操作，从而实现移动、攻击、跳跃能同时实现，极大
-    //提升了游戏的操作手感
+    /*按钮被按下时记录并启动定时器，没有按钮被按下是清楚容器并停止计时器，timeout对应函数中重复检查
+    某按键是否处于被按下状态并修改对应参数，与直接在keyPressEvent中检查按钮事件相比，这样的方法
+    还支持多个按键同时处于pressed状态下同时进行相应的操作，从而实现移动、攻击、跳跃能同时实现，极
+    大提升了游戏的操作手感*/
     key_timer = new QTimer(this);
     connect(key_timer,&QTimer::timeout,this,&GamePage::onKeytimer);
     paint_timer = new QTimer(this);
@@ -76,19 +76,7 @@ void GamePage::onKeytimer(){
         if (y < 750)
             y += 50;
     }
-    if(pressed_key.contains(Qt::Key_J)){
-        if (dir == 0){
-            fb[fireballCount % 20].setX(x+50);
-            fb[fireballCount % 20].setDir(0);
-        }
-        else{
-            fb[fireballCount % 20].setX(x-100);
-            fb[fireballCount % 20].setDir(1);
-        }
-        fb[(fireballCount % 20)].setActive();
-        fireballCount++;
-        attack = 1;
-    }
+
 }
 
 void GamePage::paintEvent(QPaintEvent *event)
@@ -109,7 +97,7 @@ void GamePage::paintEvent(QPaintEvent *event)
     if (mapCounter == 0){
         ui->introduce->setText(QString("<center><h1>"
                                        "press WASD to move <br><br>"
-                                       "prese J/K to use firebal/sword to attack <br><br>"
+                                       "prese J/K to use fireball/sword to attack <br><br>"
                                        "press U/I/O to use existing skills <br><br>"
                                        "</h1></center>"));
     }
@@ -154,7 +142,7 @@ void GamePage::paintEvent(QPaintEvent *event)
                     img_fb = QPixmap("../image/fbr.png");
                 else
                     img_fb = QPixmap("../image/fbl.png");
-                p.drawPixmap(fb[i].getX(),700,150,150,img_fb);
+                p.drawPixmap(fb[i].getX(),fb[i].getY(),150,150,img_fb);
             }
         }
     }
@@ -162,25 +150,34 @@ void GamePage::paintEvent(QPaintEvent *event)
 
 void GamePage::keyPressEvent(QKeyEvent *event)
 {
+    //记录被按下的移动键
     pressed_key.append(static_cast<Qt::Key>(event->key()));
     if(!key_timer->isActive()) {
            key_timer->start(50);
     }
 
-//    if(event->key() == Qt::Key_J){
-//        if (dir == 0)
-//        {
-//            fb[fireballCount % 20].setX(x+50);
-//            fb[fireballCount % 20].setDir(0);
-//        }
-//        else{
-//            fb[fireballCount % 20].setX(x-100);
-//            fb[fireballCount % 20].setDir(1);
-//        }
-//        fb[(fireballCount % 20)].setActive();
-//        fireballCount++;
-//        attack = 1;
-//    }
+    //攻击键
+    if(pressed_key.contains(Qt::Key_J)){
+        if (dir == 0){
+            fb[fireballCount % 20].setX(x+50);
+            fb[fireballCount % 20].setY(y);
+            fb[fireballCount % 20].setDir(0);
+        }
+        else{
+            fb[fireballCount % 20].setX(x-100);
+            fb[fireballCount % 20].setY(y);
+            fb[fireballCount % 20].setDir(1);
+        }
+        fb[(fireballCount % 20)].setActive();
+        fireballCount++;
+        attack = 1;
+    }
+
+    //退回到主界面并重置所有gamepage元素
+    if (event->key() == Qt::Key_Escape){
+        key_timer->stop();
+        quitAndReset();
+    }
 }
 
 void GamePage::keyReleaseEvent(QKeyEvent *event)
@@ -191,3 +188,12 @@ void GamePage::keyReleaseEvent(QKeyEvent *event)
     }
     pressed_key.removeAll(static_cast<Qt::Key>(event->key()));
 }
+
+void GamePage::quitAndReset()
+{
+    emit quitToMain();
+}
+
+//退出游戏界面并重置游戏要素
+//注意及时更新需要重置的游戏要素
+
