@@ -1,27 +1,59 @@
 #include "gamepage.h"
 #include "ui_gamepage.h"
 #include "fireball.h"
+#include "monster.h"
 #include <QPainter>
 #include <QKeyEvent>
 #include <QDebug>
 #include <QTimer>
 #include <QVector>
+
+void GamePage::generateMonster()
+{
+    mon[monsterCount].setActive(1);
+    //0~5分别对应左上、左中、左下、右上、右中、右下；
+    mon[monsterCount].setPosRand(rand() % 6);
+    mon[monsterCount].setW(150);
+    mon[monsterCount].setH(150);
+    //03、14、25分别对应的底线为800、850、900，对应的y为 底线 - h
+    int pos = 800 + mon[monsterCount].getPosRand() % 3 * 50  - mon[monsterCount].getH();
+    mon[monsterCount].setY(pos);
+    //x根据左右朝向来确定
+    if (mon[monsterCount].getPosRand() <= 2){
+        mon[monsterCount].setX(0);
+        mon[monsterCount].setDir(0);//左侧朝右
+        mon[monsterCount].setPicMonster(QPixmap("../image/slr0"));
+    }
+    else{
+        mon[monsterCount].setX(1600 - mon[monsterCount].getW());
+        mon[monsterCount].setDir(1);//右侧朝左
+        mon[monsterCount].setPicMonster(QPixmap("../image/sll0"));
+    }
+
+    monsterCount++;
+    monsterCount %= 50;
+}
+
 GamePage::GamePage(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GamePage)
 {
     ui->setupUi(this);
+
     /*按钮被按下时记录并启动定时器，没有按钮被按下是清楚容器并停止计时器，timeout对应函数中重复检查
     某按键是否处于被按下状态并修改对应参数，与直接在keyPressEvent中检查按钮事件相比，这样的方法
     还支持多个按键同时处于pressed状态下同时进行相应的操作，从而实现移动、攻击、跳跃能同时实现，极
     大提升了游戏的操作手感*/
+    //按键判断定时器
     key_timer = new QTimer(this);
     connect(key_timer,&QTimer::timeout,this,&GamePage::onKeytimer);
+
+    //定时调用update重新绘图
     paint_timer = new QTimer(this);
     paint_timer->start(50);
     connect(paint_timer,&QTimer::timeout,
             [=](){
-                //重绘工程中顺便实现火球的随时间移动的特性
+            //重绘计时器中实现火球位置变化
             for (int i = 0;i < 20;i++){
                 if (fb[i].getActive()){
                     int temp = fb[i].getX();
@@ -36,9 +68,52 @@ GamePage::GamePage(QWidget *parent) :
                     fb[i].setX(temp);
                 }
             }
-                update();
+            //重绘计时器中实现怪物位置变化
+            for (int i = 0;i < 50;i++){
+                if (mon[i].getActive()){
+                    int temp = mon[i].getX();
+                    if (mon[i].getDir() == 0)
+                        mon[i].setX(temp + 5);
+                    else
+                        mon[i].setX(temp - 5);
+                    //越界
+                    if (mon[i].getX() < 0 - mon[i].getW() || mon[i].getX() > 1600 )
+                        mon[i].setActive(0);
+                }
             }
-            );
+
+
+            //定时重绘
+            update();
+        }
+    );
+
+    mon_timer = new QTimer(this);
+    mon_timer->start(monInterval);
+    connect(mon_timer,&QTimer::timeout,
+        [=](){
+            generateMonster();
+        }
+    );
+
+    ui->skill1->setText("<center><h2>Empty Skill</h2></center>");
+    ui->skill2->setText("<center><h2>Empty Skill</h2></center>");
+    ui->skill3->setText("<center><h2>Empty Skill</h2></center>");
+    ui->skill1->setStyleSheet("QLabel{"
+                              " border: 5px dashed white;"
+                              " color : white;"
+                              "}");
+    ui->skill2->setStyleSheet("QLabel{"
+                              " border: 5px dashed white;"
+                              " color : white;"
+                              "}");
+    ui->skill3->setStyleSheet("QLabel{"
+                              " border: 5px dashed white;"
+                              " color : white;"
+                              "}");
+    ui->skillarea->setStyleSheet("QWidget {"
+                                 " border: 5px solid black;"
+                                 "}");
 }
 
 GamePage::~GamePage()
@@ -104,6 +179,69 @@ void GamePage::paintEvent(QPaintEvent *event)
     else {
         ui->introduce->setText("");
     }
+
+    //绘制上层的怪物
+    for (int i = 0;i < 50;i++){
+        //是否为上层
+        if (mon[i].getPosRand() % 3 == 0){
+            //根据当前帧设置对应图片
+            int temp = mon[i].getPicFrame();
+            temp = temp & 1;
+            if (temp){
+                if (mon[i].getDir() == 0){
+                    mon[i].setPicMonster(QPixmap("../image/slr1"));
+                }
+                else{
+                    mon[i].setPicMonster(QPixmap("../image/sll1"));
+                }
+            }
+            else{
+                if (mon[i].getDir() == 0){
+                    mon[i].setPicMonster(QPixmap("../image/slr0"));
+                }
+                else{
+                    mon[i].setPicMonster(QPixmap("../image/sll0"));
+                }
+            }
+            mon[i].setPicFrame(temp + 1);//帧数加一
+            //遍历绘图
+            if (mon[i].getActive()){
+                p.drawPixmap(mon[i].getX(),mon[i].getY(),mon[i].getW(),mon[i].getH(),mon[i].getPicMonster());
+            }
+        }
+    }
+
+    //绘制中层的怪物
+    for (int i = 0;i < 50;i++){
+        //是否为中层
+        if (mon[i].getPosRand() % 3 == 1){
+            //根据当前帧设置对应图片
+            int temp = mon[i].getPicFrame();
+            temp = temp & 1;
+            if (temp){
+                if (mon[i].getDir() == 0){
+                    mon[i].setPicMonster(QPixmap("../image/slr1"));
+                }
+                else{
+                    mon[i].setPicMonster(QPixmap("../image/sll1"));
+                }
+            }
+            else{
+                if (mon[i].getDir() == 0){
+                    mon[i].setPicMonster(QPixmap("../image/slr0"));
+                }
+                else{
+                    mon[i].setPicMonster(QPixmap("../image/sll0"));
+                }
+            }
+            mon[i].setPicFrame(temp + 1);//帧数加一
+            //遍历绘图
+            if (mon[i].getActive()){
+                p.drawPixmap(mon[i].getX(),mon[i].getY(),mon[i].getW(),mon[i].getH(),mon[i].getPicMonster());
+            }
+        }
+    }
+
     //绘画角色
     QPixmap ch;
     if (dir == 0){
@@ -127,11 +265,43 @@ void GamePage::paintEvent(QPaintEvent *event)
             ch = QPixmap("../image/l3.png");
     }
     p.drawPixmap(x,y,100,150,ch);
+
+    //绘画底层怪物怪物
+    for (int i = 0;i < 50;i++){
+        //是否为底层
+        if (mon[i].getPosRand() == 2 || mon[i].getPosRand() == 5){
+            //根据当前帧设置对应图片
+            int temp = mon[i].getPicFrame();
+            temp = temp & 1;
+            if (temp){
+                if (mon[i].getDir() == 0){
+                    mon[i].setPicMonster(QPixmap("../image/slr1"));
+                }
+                else{
+                    mon[i].setPicMonster(QPixmap("../image/sll1"));
+                }
+            }
+            else{
+                if (mon[i].getDir() == 0){
+                    mon[i].setPicMonster(QPixmap("../image/slr0"));
+                }
+                else{
+                    mon[i].setPicMonster(QPixmap("../image/sll0"));
+                }
+            }
+            mon[i].setPicFrame(temp + 1);//帧数加一
+            //遍历绘图
+            if (mon[i].getActive()){
+                p.drawPixmap(mon[i].getX(),mon[i].getY(),mon[i].getW(),mon[i].getH(),mon[i].getPicMonster());
+            }
+        }
+    }
+
     //绘画血量：困难1血，普通2血，简单3血
     for (int i = 0,l = 0;i < hp - difficulty;i++,l += 60){
-
         p.drawPixmap(l,0,50,50,QPixmap("../image/hp.png"));
     }
+
     //绘画火球攻击
     QPixmap img_fb;
     if (attack){

@@ -14,7 +14,9 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QLCDNumber>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -24,6 +26,12 @@ class Ui_GamePage
 public:
     QLabel *label;
     QLabel *introduce;
+    QLCDNumber *lcdNumber;
+    QWidget *skillarea;
+    QVBoxLayout *verticalLayout;
+    QLabel *skill1;
+    QLabel *skill2;
+    QLabel *skill3;
 
     void setupUi(QWidget *GamePage)
     {
@@ -39,9 +47,32 @@ public:
         label->setMaximumSize(QSize(1600, 900));
         introduce = new QLabel(GamePage);
         introduce->setObjectName(QStringLiteral("introduce"));
-        introduce->setGeometry(QRect(0, 0, 1600, 450));
-        introduce->setMinimumSize(QSize(1600, 450));
-        introduce->setMaximumSize(QSize(1600, 450));
+        introduce->setGeometry(QRect(200, 0, 1200, 450));
+        introduce->setMinimumSize(QSize(1200, 450));
+        introduce->setMaximumSize(QSize(1200, 450));
+        lcdNumber = new QLCDNumber(GamePage);
+        lcdNumber->setObjectName(QStringLiteral("lcdNumber"));
+        lcdNumber->setGeometry(QRect(1430, 10, 161, 81));
+        skillarea = new QWidget(GamePage);
+        skillarea->setObjectName(QStringLiteral("skillarea"));
+        skillarea->setGeometry(QRect(0, 50, 271, 261));
+        verticalLayout = new QVBoxLayout(skillarea);
+        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        skill1 = new QLabel(skillarea);
+        skill1->setObjectName(QStringLiteral("skill1"));
+
+        verticalLayout->addWidget(skill1);
+
+        skill2 = new QLabel(skillarea);
+        skill2->setObjectName(QStringLiteral("skill2"));
+
+        verticalLayout->addWidget(skill2);
+
+        skill3 = new QLabel(skillarea);
+        skill3->setObjectName(QStringLiteral("skill3"));
+
+        verticalLayout->addWidget(skill3);
+
 
         retranslateUi(GamePage);
 
@@ -53,6 +84,9 @@ public:
         GamePage->setWindowTitle(QApplication::translate("GamePage", "Form", Q_NULLPTR));
         label->setText(QString());
         introduce->setText(QString());
+        skill1->setText(QString());
+        skill2->setText(QString());
+        skill3->setText(QString());
     } // retranslateUi
 
 };
