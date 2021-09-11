@@ -32,8 +32,8 @@ Widget::~Widget()
 void Widget::paintEvent(QPaintEvent *event)
 {
     QPainter p(this);
-    p.drawPixmap(rect(),QPixmap("../image/bg.png"));
-    p.drawPixmap(200,0,1200,600,QPixmap("../image/title.png"));
+    p.drawPixmap(rect(),QPixmap(":image/bg.png"));
+    p.drawPixmap(200,0,1200,600,QPixmap(":image/title.png"));
 }
 
 

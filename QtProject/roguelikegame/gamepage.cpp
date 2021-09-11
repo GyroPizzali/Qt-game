@@ -22,12 +22,12 @@ void GamePage::generateMonster()
     if (mon[monsterCount].getPosRand() <= 2){
         mon[monsterCount].setX(0);
         mon[monsterCount].setDir(0);//左侧朝右
-        mon[monsterCount].setPicMonster(QPixmap("../image/slr0"));
+        mon[monsterCount].setPicMonster(QPixmap(":image/slr0"));
     }
     else{
         mon[monsterCount].setX(1600 - mon[monsterCount].getW());
         mon[monsterCount].setDir(1);//右侧朝左
-        mon[monsterCount].setPicMonster(QPixmap("../image/sll0"));
+        mon[monsterCount].setPicMonster(QPixmap(":image/sll0"));
     }
 
     monsterCount++;
@@ -160,13 +160,13 @@ void GamePage::paintEvent(QPaintEvent *event)
     //绘画背景地图
     QPixmap bg;
     if (mapCounter == 0)
-        bg = QPixmap("../image/bg1.png");
+        bg = QPixmap(":image/bg1.png");
     if (mapCounter == 1)
-        bg = QPixmap("../image/bg2.png");
+        bg = QPixmap(":image/bg2.png");
     if (mapCounter == 2)
-        bg = QPixmap("../image/bg3.jpg");
+        bg = QPixmap(":image/bg3.jpg");
     if (mapCounter == 3)
-        bg = QPixmap("../image/bg4.jpg");
+        bg = QPixmap(":image/bg4.jpg");
     p.drawPixmap(rect(),bg);
     //绘画第一关的介绍
     if (mapCounter == 0){
@@ -189,18 +189,18 @@ void GamePage::paintEvent(QPaintEvent *event)
             temp = temp & 1;
             if (temp){
                 if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap("../image/slr1"));
+                    mon[i].setPicMonster(QPixmap(":image/slr1"));
                 }
                 else{
-                    mon[i].setPicMonster(QPixmap("../image/sll1"));
+                    mon[i].setPicMonster(QPixmap(":image/sll1"));
                 }
             }
             else{
                 if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap("../image/slr0"));
+                    mon[i].setPicMonster(QPixmap(":image/slr0"));
                 }
                 else{
-                    mon[i].setPicMonster(QPixmap("../image/sll0"));
+                    mon[i].setPicMonster(QPixmap(":image/sll0"));
                 }
             }
             mon[i].setPicFrame(temp + 1);//帧数加一
@@ -220,18 +220,18 @@ void GamePage::paintEvent(QPaintEvent *event)
             temp = temp & 1;
             if (temp){
                 if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap("../image/slr1"));
+                    mon[i].setPicMonster(QPixmap(":image/slr1"));
                 }
                 else{
-                    mon[i].setPicMonster(QPixmap("../image/sll1"));
+                    mon[i].setPicMonster(QPixmap(":image/sll1"));
                 }
             }
             else{
                 if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap("../image/slr0"));
+                    mon[i].setPicMonster(QPixmap(":image/slr0"));
                 }
                 else{
-                    mon[i].setPicMonster(QPixmap("../image/sll0"));
+                    mon[i].setPicMonster(QPixmap(":image/sll0"));
                 }
             }
             mon[i].setPicFrame(temp + 1);//帧数加一
@@ -246,23 +246,23 @@ void GamePage::paintEvent(QPaintEvent *event)
     QPixmap ch;
     if (dir == 0){
         if (right_forward == 0)
-            ch = QPixmap("../image/r0.png");
+            ch = QPixmap(":image/r0.png");
         if (right_forward == 1)
-            ch = QPixmap("../image/r1.png");
+            ch = QPixmap(":image/r1.png");
         if (right_forward == 2)
-            ch = QPixmap("../image/r2.png");
+            ch = QPixmap(":image/r2.png");
         if (right_forward == 3)
-            ch = QPixmap("../image/r3.png");
+            ch = QPixmap(":image/r3.png");
     }
     else{
         if (left_forward == 0)
-            ch = QPixmap("../image/l0.png");
+            ch = QPixmap(":image/l0.png");
         if (left_forward == 1)
-            ch = QPixmap("../image/l1.png");
+            ch = QPixmap(":image/l1.png");
         if (left_forward == 2)
-            ch = QPixmap("../image/l2.png");
+            ch = QPixmap(":image/l2.png");
         if (left_forward == 3)
-            ch = QPixmap("../image/l3.png");
+            ch = QPixmap(":image/l3.png");
     }
     p.drawPixmap(x,y,100,150,ch);
 
@@ -275,18 +275,18 @@ void GamePage::paintEvent(QPaintEvent *event)
             temp = temp & 1;
             if (temp){
                 if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap("../image/slr1"));
+                    mon[i].setPicMonster(QPixmap(":image/slr1"));
                 }
                 else{
-                    mon[i].setPicMonster(QPixmap("../image/sll1"));
+                    mon[i].setPicMonster(QPixmap(":image/sll1"));
                 }
             }
             else{
                 if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap("../image/slr0"));
+                    mon[i].setPicMonster(QPixmap(":image/slr0"));
                 }
                 else{
-                    mon[i].setPicMonster(QPixmap("../image/sll0"));
+                    mon[i].setPicMonster(QPixmap(":image/sll0"));
                 }
             }
             mon[i].setPicFrame(temp + 1);//帧数加一
@@ -299,7 +299,7 @@ void GamePage::paintEvent(QPaintEvent *event)
 
     //绘画血量：困难1血，普通2血，简单3血
     for (int i = 0,l = 0;i < hp - difficulty;i++,l += 60){
-        p.drawPixmap(l,0,50,50,QPixmap("../image/hp.png"));
+        p.drawPixmap(l,0,50,50,QPixmap(":image/hp.png"));
     }
 
     //绘画火球攻击
@@ -309,9 +309,9 @@ void GamePage::paintEvent(QPaintEvent *event)
         for (int i = 0;i < 20;i++){
             if (fb[i].getActive()){
                 if (fb[i].getDir() == 0)
-                    img_fb = QPixmap("../image/fbr.png");
+                    img_fb = QPixmap(":image/fbr.png");
                 else
-                    img_fb = QPixmap("../image/fbl.png");
+                    img_fb = QPixmap(":image/fbl.png");
                 p.drawPixmap(fb[i].getX(),fb[i].getY(),150,150,img_fb);
             }
         }

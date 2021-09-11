@@ -37,7 +37,8 @@ HEADERS += \
     gamepage.h \
     fireball.h \
     monster.h \
-    item.h
+    item.h \
+    config.h
 
 FORMS += \
         widget.ui \
@@ -50,3 +51,6 @@ CONFIG += C++11;
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    res.qrc
