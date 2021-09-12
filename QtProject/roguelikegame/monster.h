@@ -1,7 +1,7 @@
 #ifndef MONSTER_H
 #define MONSTER_H
 #include <QPixmap>
-
+#include<QRect>
 class Monster
 {
 private:
@@ -15,6 +15,7 @@ private:
     int hp;//当前血量
     int hp_max;//最大血量
     int picFrame;//动画帧数计数变量
+    QRect monster_rect;
     QPixmap picMonster;//当前帧图片
 public:
     //行为函数

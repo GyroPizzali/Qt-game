@@ -152,6 +152,10 @@ void GamePage::onKeytimer(){
             y += 50;
     }
 
+    if(pressed_key.contains(Qt::Key_K)){
+        isSwordShown = 1;
+    }
+
 }
 
 void GamePage::paintEvent(QPaintEvent *event)
@@ -172,7 +176,7 @@ void GamePage::paintEvent(QPaintEvent *event)
     if (mapCounter == 0){
         ui->introduce->setText(QString("<center><h1>"
                                        "press WASD to move <br><br>"
-                                       "prese J/K to use fireball/sword to attack <br><br>"
+                                       "prese J/K to attack <br><br>"
                                        "press U/I/O to use existing skills <br><br>"
                                        "</h1></center>"));
     }
@@ -315,6 +319,22 @@ void GamePage::paintEvent(QPaintEvent *event)
                 p.drawPixmap(fb[i].getX(),fb[i].getY(),150,150,img_fb);
             }
         }
+    }
+
+    //绘画近身攻击
+    QPixmap near_attack;
+    int swordx = x;
+    if(isSwordShown){
+        if (dir == 0){
+            near_attack = QPixmap(":image/swordr.png");
+            swordx += 50;
+        }
+        else{
+            near_attack = QPixmap(":image/swordl.png");
+            swordx -= 100;
+        }
+        p.drawPixmap(swordx,y,150,150,near_attack);
+        isSwordShown = 0;
     }
 }
 
