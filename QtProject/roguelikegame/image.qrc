@@ -25,6 +25,17 @@
         <file>../image/slr1.png</file>
         <file>../image/swordl.png</file>
         <file>../image/swordr.png</file>
+        <file>../image/bgskill.png</file>
+        <file>../image/bghp.png</file>
         <file>../image/title.png</file>
+        <file>../image/bgtitle.png</file>
+        <file>../image/alienl.png</file>
+        <file>../image/alienr.png</file>
+        <file>../image/gol0.png</file>
+        <file>../image/gol1.png</file>
+        <file>../image/gol2.png</file>
+        <file>../image/gor0.png</file>
+        <file>../image/gor1.png</file>
+        <file>../image/gor2.png</file>
     </qresource>
 </RCC>

@@ -37,7 +37,7 @@ private:
     int difficulty = 0;//难度
 
     //直接把角色属性放到游戏界面类来
-    int hp = 3;//人物血量
+    int hp = 3;//人物血量,实际血量为hp - difficulty
     int x = 0;//人物坐标
     int y = 700;//人物坐标
     int dir = 0;//人物朝向， 右0左1

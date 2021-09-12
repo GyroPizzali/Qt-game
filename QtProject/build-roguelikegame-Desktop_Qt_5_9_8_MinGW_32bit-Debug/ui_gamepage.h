@@ -55,7 +55,7 @@ public:
         lcdNumber->setGeometry(QRect(1430, 10, 161, 81));
         skillarea = new QWidget(GamePage);
         skillarea->setObjectName(QStringLiteral("skillarea"));
-        skillarea->setGeometry(QRect(0, 50, 271, 261));
+        skillarea->setGeometry(QRect(0, 50, 350, 350));
         verticalLayout = new QVBoxLayout(skillarea);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         skill1 = new QLabel(skillarea);

@@ -10,11 +10,7 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowTitle("Sword and Magic");
-    this->setStyleSheet("QLabel {"
-                        "color : white;"//游戏标题颜色
-                        "background-image : url();"//待定标题背景
-                        "}"
-                        "QPushButton {"
+    this->setStyleSheet("QPushButton {"
                         "border-radius : 35px;"//边框圆角
                         "background-color: rgba(255, 255, 255, 188);"//边框颜色及透明度
                         "}"
@@ -33,7 +29,8 @@ void Widget::paintEvent(QPaintEvent *event)
 {
     QPainter p(this);
     p.drawPixmap(rect(),QPixmap(":image/bg.png"));
-    p.drawPixmap(200,0,1200,600,QPixmap(":image/title.png"));
+    p.drawPixmap(150,50,1300,350,QPixmap(":image/bgtitle.png"));
+    p.drawPixmap(280,80,1100,300,QPixmap(":image/title.png"));
 }
 
 
