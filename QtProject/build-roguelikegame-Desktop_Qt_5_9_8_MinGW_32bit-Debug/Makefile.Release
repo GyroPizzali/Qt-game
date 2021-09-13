@@ -287,6 +287,7 @@ release/moc_widget.cpp: ../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtWidgets/QWid
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/qtimer.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/qbasictimer.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/QVector \
+		../roguelikegame/hero.h \
 		../roguelikegame/fireball.h \
 		../roguelikegame/monster.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtGui/QPixmap \
@@ -401,6 +402,7 @@ release/moc_gamepage.cpp: ../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtWidgets/QW
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/qtimer.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/qbasictimer.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/QVector \
+		../roguelikegame/hero.h \
 		../roguelikegame/fireball.h \
 		../roguelikegame/monster.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtGui/QPixmap \
@@ -542,6 +544,7 @@ release/main.o: ../roguelikegame/main.cpp ../roguelikegame/widget.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/qtimer.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/qbasictimer.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/QVector \
+		../roguelikegame/hero.h \
 		../roguelikegame/fireball.h \
 		../roguelikegame/monster.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtGui/QPixmap \
@@ -662,6 +665,7 @@ release/widget.o: ../roguelikegame/widget.cpp ../roguelikegame/widget.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/qtimer.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/qbasictimer.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/QVector \
+		../roguelikegame/hero.h \
 		../roguelikegame/fireball.h \
 		../roguelikegame/monster.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtGui/QPixmap \
@@ -821,6 +825,7 @@ release/gamepage.o: ../roguelikegame/gamepage.cpp ../roguelikegame/gamepage.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/qtimer.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/qbasictimer.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/QVector \
+		../roguelikegame/hero.h \
 		../roguelikegame/fireball.h \
 		../roguelikegame/monster.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtGui/QPixmap \
@@ -875,6 +880,8 @@ release/gamepage.o: ../roguelikegame/gamepage.cpp ../roguelikegame/gamepage.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtGui/qpainter.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtGui/qtextoption.h \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtGui/qpen.h \
+		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtGui/QBrush \
+		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtGui/QPen \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtGui/QKeyEvent \
 		../../Qt/Qt5.9.8/5.9.8/mingw53_32/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\gamepage.o ..\roguelikegame\gamepage.cpp
@@ -1205,9 +1212,7 @@ release/alien.o: ../roguelikegame/alien.cpp ../roguelikegame/alien.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\alien.o ..\roguelikegame\alien.cpp
 
 release/hero.o: ../roguelikegame/hero.cpp ../roguelikegame/hero.h \
-		../roguelikegame/fireball.h \
-		../roguelikegame/item.h \
-		../roguelikegame/config.h
+		../roguelikegame/fireball.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\hero.o ..\roguelikegame\hero.cpp
 
 release/qrc_image.o: release/qrc_image.cpp 

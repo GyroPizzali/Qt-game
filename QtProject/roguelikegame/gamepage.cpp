@@ -66,17 +66,17 @@ GamePage::GamePage(QWidget *parent) :
             [=](){
             //重绘计时器中实现火球位置变化
             for (int i = 0;i < 20;i++){
-                if (fb[i].getActive()){
-                    int temp = fb[i].getX();
-                    if (fb[i].getDir() == 0)
+                if (hero.firebag[i].getActive()){
+                    int temp = hero.firebag[i].getX();
+                    if (hero.firebag[i].getDir() == 0)
                         temp += 20;
                     else
                         temp -= 20;
                     //越界重置
                     if (temp > 1700 || temp < -100){
-                        fb[i].unsetActive();
+                        hero.firebag[i].unsetActive();
                     }
-                    fb[i].setX(temp);
+                    hero.firebag[i].setX(temp);
                 }
             }
             //重绘计时器中实现怪物位置变化
@@ -133,37 +133,37 @@ GamePage::~GamePage()
 
 void GamePage::onKeytimer(){
     if(pressed_key.contains(Qt::Key_D)){
-        dir = 0;
-        right_forward++;
-        right_forward = right_forward % 4;
-        if (x <= 1600)
-            x += pace;
-        if (x > 1600){
-            x = 0;
+        hero.dir = 0;
+        hero.right_forward++;
+        hero.right_forward = hero.right_forward % 4;
+        if (hero.x <= 1600)
+            hero.x += hero.speed;
+        if (hero.x > 1600){
+            hero.x = 0;
             int temp = mapCounter;
             while(mapCounter == temp)//防止下一站地图与本张相同
                 mapCounter = rand() % 4;
             }
     }
     if(pressed_key.contains(Qt::Key_A)){
-        dir = 1;
-        left_forward++;
-        left_forward = left_forward % 4;
-        if (0 <= x)
-            x -= pace;
+        hero.dir = 1;
+        hero.left_forward++;
+        hero.left_forward = hero.left_forward % 4;
+        if (0 <= hero.x)
+            hero.x -= hero.speed;
     }
 
     if(pressed_key.contains(Qt::Key_W)){
-        if (y > 650)
-            y -= 50;
+        if (hero.y > 650)
+            hero.y -= 50;
     }
     if(pressed_key.contains(Qt::Key_S)){
-        if (y < 750)
-            y += 50;
+        if (hero.y < 750)
+            hero.y += 50;
     }
 
     if(pressed_key.contains(Qt::Key_K)){
-        isSwordShown = 1;
+        hero.isSwordShown = 1;
     }
 
 }
@@ -189,7 +189,7 @@ void GamePage::paintEvent(QPaintEvent *event)
     //绘制技能栏背景
     p.drawPixmap(0,50,400,350,QPixmap(":image/bgskill.png"));
     //绘画血条背景
-    p.drawPixmap(0,0,(hp - difficulty) * 60,70,QPixmap(":/image/bghp.png"));
+    p.drawPixmap(0,0,(hero.hp - difficulty) * 60,70,QPixmap(":/image/bghp.png"));
 
     //绘画第一关的介绍
     if (mapCounter == 0){
@@ -237,27 +237,27 @@ void GamePage::paintEvent(QPaintEvent *event)
 
     //绘画角色
     QPixmap ch;
-    if (dir == 0){
-        if (right_forward == 0)
+    if (hero.dir == 0){
+        if (hero.right_forward == 0)
             ch = QPixmap(":image/r0.png");
-        if (right_forward == 1)
+        if (hero.right_forward == 1)
             ch = QPixmap(":image/r1.png");
-        if (right_forward == 2)
+        if (hero.right_forward == 2)
             ch = QPixmap(":image/r2.png");
-        if (right_forward == 3)
+        if (hero.right_forward == 3)
             ch = QPixmap(":image/r3.png");
     }
     else{
-        if (left_forward == 0)
+        if (hero.left_forward == 0)
             ch = QPixmap(":image/l0.png");
-        if (left_forward == 1)
+        if (hero.left_forward == 1)
             ch = QPixmap(":image/l1.png");
-        if (left_forward == 2)
+        if (hero.left_forward == 2)
             ch = QPixmap(":image/l2.png");
-        if (left_forward == 3)
+        if (hero.left_forward == 3)
             ch = QPixmap(":image/l3.png");
     }
-    p.drawPixmap(x,y,100,150,ch);
+    p.drawPixmap(hero.x,hero.y,100,150,ch);
 
     //绘画底层怪物怪物
     for (int i = 0;i < monsterCount;i++){
@@ -276,30 +276,30 @@ void GamePage::paintEvent(QPaintEvent *event)
     }
 
     //绘画血量：困难1血，普通2血，简单3血
-    for (int i = 0,l = 0;i < hp - difficulty;i++,l += 60){
+    for (int i = 0,l = 0;i < hero.hp - difficulty;i++,l += 60){
         p.drawPixmap(l,0,50,50,QPixmap(":image/hp.png"));
     }
 
     //绘画火球攻击
     QPixmap img_fb;
-    if (attack){
+    if (hero.attack){
         //便利火球数组输出当前场上的火球
         for (int i = 0;i < 20;i++){
-            if (fb[i].getActive()){
-                if (fb[i].getDir() == 0)
+            if (hero.firebag[i].getActive()){
+                if (hero.firebag[i].getDir() == 0)
                     img_fb = QPixmap(":image/fbr.png");
                 else
                     img_fb = QPixmap(":image/fbl.png");
-                p.drawPixmap(fb[i].getX(),fb[i].getY(),150,150,img_fb);
+                p.drawPixmap(hero.firebag[i].getX(),hero.firebag[i].getY(),150,150,img_fb);
             }
         }
     }
 
     //绘画近身攻击
     QPixmap near_attack;
-    int swordx = x;
-    if(isSwordShown){
-        if (dir == 0){
+    int swordx = hero.x;
+    if(hero.isSwordShown){
+        if (hero.dir == 0){
             near_attack = QPixmap(":image/swordr.png");
             swordx += 50;
         }
@@ -307,8 +307,8 @@ void GamePage::paintEvent(QPaintEvent *event)
             near_attack = QPixmap(":image/swordl.png");
             swordx -= 100;
         }
-        p.drawPixmap(swordx,y,150,150,near_attack);
-        isSwordShown = 0;
+        p.drawPixmap(swordx,hero.y,150,150,near_attack);
+        hero.isSwordShown = 0;
     }
 
     //绘画怪物血条
@@ -342,19 +342,19 @@ void GamePage::keyPressEvent(QKeyEvent *event)
 
     //攻击键
     if(pressed_key.contains(Qt::Key_J)){
-        if (dir == 0){
-            fb[fireballCount % 20].setX(x+50);
-            fb[fireballCount % 20].setY(y);
-            fb[fireballCount % 20].setDir(0);
+        if (hero.dir == 0){
+            hero.firebag[hero.fireballCount % 30].setX(hero.x+50);
+            hero.firebag[hero.fireballCount % 30].setY(hero.y);
+            hero.firebag[hero.fireballCount % 30].setDir(0);
         }
         else{
-            fb[fireballCount % 20].setX(x-100);
-            fb[fireballCount % 20].setY(y);
-            fb[fireballCount % 20].setDir(1);
+            hero.firebag[hero.fireballCount % 30].setX(hero.x-100);
+            hero.firebag[hero.fireballCount % 30].setY(hero.y);
+            hero.firebag[hero.fireballCount % 30].setDir(1);
         }
-        fb[(fireballCount % 20)].setActive();
-        fireballCount++;
-        attack = 1;
+        hero.firebag[(hero.fireballCount % 30)].setActive();
+        hero.fireballCount++;
+        hero.attack = 1;
     }
 
     //退回到主界面并重置所有gamepage元素
