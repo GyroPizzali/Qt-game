@@ -12,8 +12,8 @@ private:
     int h;//高度
     int dir;//朝向，右0左1
     int posRand;//怪物位置随机初始化，0~5分别对应左上、左中、左下、右上、右中、右下；
-    int hp;//当前血量
-    int hp_max;//最大血量
+    int hp = 5;//当前血量
+    int hp_max = 5;//最大血量
     int picFrame;//动画帧数计数变量
     QRect monster_rect;//怪物碰撞体积
     QPixmap picMonster;//当前帧图片

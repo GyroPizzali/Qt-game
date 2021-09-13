@@ -6,6 +6,8 @@
 #include "goblin.h"
 #include "alien.h"
 #include <QPainter>
+#include <QBrush>
+#include <QPen>
 #include <QKeyEvent>
 #include <QDebug>
 #include <QTimer>
@@ -13,28 +15,6 @@
 
 void GamePage::generateMonster()
 {
-//    mon[monsterCount].setActive(1);
-//    //0~5分别对应左上、左中、左下、右上、右中、右下；
-//    mon[monsterCount].setPosRand(rand() % 6);
-//    mon[monsterCount].setW(150);
-//    mon[monsterCount].setH(150);
-//    //03、14、25分别对应的底线为800、850、900，对应的y为 底线 - h
-//    int pos = 800 + mon[monsterCount].getPosRand() % 3 * 50  - mon[monsterCount].getH();
-//    mon[monsterCount].setY(pos);
-//    //x根据左右朝向来确定
-//    if (mon[monsterCount].getPosRand() <= 2){
-//        mon[monsterCount].setX(0);
-//        mon[monsterCount].setDir(0);//左侧朝右
-//        mon[monsterCount].setPicMonster(QPixmap(":image/slr0"));
-//    }
-//    else{
-//        mon[monsterCount].setX(1600 - mon[monsterCount].getW());
-//        mon[monsterCount].setDir(1);//右侧朝左
-//        mon[monsterCount].setPicMonster(QPixmap(":image/sll0"));
-//    }
-
-//    monsterCount++;
-//    monsterCount %= 50;
     //随机决定怪物类型
     int type = rand() % 3;
     if (type == 0)
@@ -191,6 +171,9 @@ void GamePage::onKeytimer(){
 void GamePage::paintEvent(QPaintEvent *event)
 {
     QPainter p(this);
+    QPen pen;
+
+
     //绘画背景地图
     QPixmap bg;
     if (mapCounter == 0)
@@ -327,6 +310,26 @@ void GamePage::paintEvent(QPaintEvent *event)
         p.drawPixmap(swordx,y,150,150,near_attack);
         isSwordShown = 0;
     }
+
+    //绘画怪物血条
+    for (int i = 0;i < monsterCount;i++){
+        if (mon[i]->getActive()){
+            //绘制边框
+            pen.setWidth(5);
+            pen.setColor(Qt::black);
+            p.setPen(pen);
+            p.drawRect(mon[i]->getX(),mon[i]->getY() - 20,mon[i]->getW(),20);
+            //绘制血条
+            pen.setWidth(10);
+            pen.setColor(Qt::green);
+            p.setPen(pen);
+            int hp_len = (mon[i]->getW() - 10 ) / mon[i]->getHp_max() * mon[i]->getHp();
+            if(mon[i]->getHp())
+                p.drawRect(mon[i]->getX() + 5,mon[i]->getY() - 15,hp_len,10);
+        }
+    }
+
+
 }
 
 void GamePage::keyPressEvent(QKeyEvent *event)
