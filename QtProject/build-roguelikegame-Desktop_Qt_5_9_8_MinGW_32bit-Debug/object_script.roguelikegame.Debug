@@ -1,0 +1,15 @@
+INPUT(
+./debug\main.o
+./debug\widget.o
+./debug\gamepage.o
+./debug\fireball.o
+./debug\monster.o
+./debug\item.o
+./debug\slime.o
+./debug\goblin.o
+./debug\alien.o
+./debug\hero.o
+./debug\qrc_image.o
+./debug\moc_widget.o
+./debug\moc_gamepage.o
+);

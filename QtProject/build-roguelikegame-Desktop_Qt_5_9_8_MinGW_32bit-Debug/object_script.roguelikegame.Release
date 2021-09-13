@@ -1,0 +1,15 @@
+INPUT(
+./release\main.o
+./release\widget.o
+./release\gamepage.o
+./release\fireball.o
+./release\monster.o
+./release\item.o
+./release\slime.o
+./release\goblin.o
+./release\alien.o
+./release\hero.o
+./release\qrc_image.o
+./release\moc_widget.o
+./release\moc_gamepage.o
+);

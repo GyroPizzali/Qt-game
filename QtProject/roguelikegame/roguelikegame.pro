@@ -30,7 +30,11 @@ SOURCES += \
     gamepage.cpp \
     fireball.cpp \
     monster.cpp \
-    item.cpp
+    item.cpp \
+    slime.cpp \
+    goblin.cpp \
+    alien.cpp \
+    hero.cpp
 
 HEADERS += \
         widget.h \
@@ -38,7 +42,11 @@ HEADERS += \
     fireball.h \
     monster.h \
     item.h \
-    config.h
+    config.h \
+    slime.h \
+    goblin.h \
+    alien.h \
+    hero.h
 
 FORMS += \
         widget.ui \

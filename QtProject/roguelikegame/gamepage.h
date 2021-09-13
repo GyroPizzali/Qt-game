@@ -52,7 +52,7 @@ private:
     bool isSwordShown = 0;//是否近战攻击
     QTimer *sword_timer;//刀光计时器
 
-    Monster mon[50];//怪物
+    Monster *mon[2000];//怪物基类指针
     int monsterCount = 0;//怪物计数器
     int monInterval = 3000;//怪物刷新的时间间隔
     int monRemain = 10;

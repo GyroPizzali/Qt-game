@@ -2,6 +2,9 @@
 #include "ui_gamepage.h"
 #include "fireball.h"
 #include "monster.h"
+#include "slime.h"
+#include "goblin.h"
+#include "alien.h"
 #include <QPainter>
 #include <QKeyEvent>
 #include <QDebug>
@@ -10,28 +13,56 @@
 
 void GamePage::generateMonster()
 {
-    mon[monsterCount].setActive(1);
-    //0~5分别对应左上、左中、左下、右上、右中、右下；
-    mon[monsterCount].setPosRand(rand() % 6);
-    mon[monsterCount].setW(150);
-    mon[monsterCount].setH(150);
+//    mon[monsterCount].setActive(1);
+//    //0~5分别对应左上、左中、左下、右上、右中、右下；
+//    mon[monsterCount].setPosRand(rand() % 6);
+//    mon[monsterCount].setW(150);
+//    mon[monsterCount].setH(150);
+//    //03、14、25分别对应的底线为800、850、900，对应的y为 底线 - h
+//    int pos = 800 + mon[monsterCount].getPosRand() % 3 * 50  - mon[monsterCount].getH();
+//    mon[monsterCount].setY(pos);
+//    //x根据左右朝向来确定
+//    if (mon[monsterCount].getPosRand() <= 2){
+//        mon[monsterCount].setX(0);
+//        mon[monsterCount].setDir(0);//左侧朝右
+//        mon[monsterCount].setPicMonster(QPixmap(":image/slr0"));
+//    }
+//    else{
+//        mon[monsterCount].setX(1600 - mon[monsterCount].getW());
+//        mon[monsterCount].setDir(1);//右侧朝左
+//        mon[monsterCount].setPicMonster(QPixmap(":image/sll0"));
+//    }
+
+//    monsterCount++;
+//    monsterCount %= 50;
+    //随机决定怪物类型
+    int type = rand() % 3;
+    if (type == 0)
+        mon[monsterCount] = new Slime;
+    if (type == 1)
+        mon[monsterCount] = new Goblin;
+    if (type == 2)
+        mon[monsterCount] = new Alien;
+    mon[monsterCount]->setActive(1);//激活
+    mon[monsterCount]->resetSize();//根据类型改变属性
+    //随机决定起始位置与方向
+    mon[monsterCount]->setPosRand(rand() % 6);
+    mon[monsterCount]->setW(150);
+    mon[monsterCount]->setH(150);
     //03、14、25分别对应的底线为800、850、900，对应的y为 底线 - h
-    int pos = 800 + mon[monsterCount].getPosRand() % 3 * 50  - mon[monsterCount].getH();
-    mon[monsterCount].setY(pos);
+    int pos = 800 + mon[monsterCount]->getPosRand() % 3 * 50  - mon[monsterCount]->getH();
+    mon[monsterCount]->setY(pos);
     //x根据左右朝向来确定
-    if (mon[monsterCount].getPosRand() <= 2){
-        mon[monsterCount].setX(0);
-        mon[monsterCount].setDir(0);//左侧朝右
-        mon[monsterCount].setPicMonster(QPixmap(":image/slr0"));
+    if (mon[monsterCount]->getPosRand() <= 2){
+        mon[monsterCount]->setX(0);
+        mon[monsterCount]->setDir(0);//左侧朝右
     }
     else{
-        mon[monsterCount].setX(1600 - mon[monsterCount].getW());
-        mon[monsterCount].setDir(1);//右侧朝左
-        mon[monsterCount].setPicMonster(QPixmap(":image/sll0"));
+       mon[monsterCount]->setX(1600 - mon[monsterCount]->getW());
+       mon[monsterCount]->setDir(1);//右侧朝左
     }
 
-    monsterCount++;
-    monsterCount %= 50;
+    monsterCount++;//累计产生的怪物数量加一
 }
 
 GamePage::GamePage(QWidget *parent) :
@@ -69,16 +100,16 @@ GamePage::GamePage(QWidget *parent) :
                 }
             }
             //重绘计时器中实现怪物位置变化
-            for (int i = 0;i < 50;i++){
-                if (mon[i].getActive()){
-                    int temp = mon[i].getX();
-                    if (mon[i].getDir() == 0)
-                        mon[i].setX(temp + 5);
+            for (int i = 0;i < monsterCount;i++){
+                if (mon[i]->getActive()){
+                    int temp = mon[i]->getX();
+                    if (mon[i]->getDir() == 0)
+                        mon[i]->setX(temp + 5);
                     else
-                        mon[i].setX(temp - 5);
+                        mon[i]->setX(temp - 5);
                     //越界
-                    if (mon[i].getX() < 0 - mon[i].getW() || mon[i].getX() > 1600 )
-                        mon[i].setActive(0);
+                    if (mon[i]->getX() < 0 - mon[i]->getW() || mon[i]->getX() > 1600)
+                        mon[i]->setActive(0);
                 }
             }
 
@@ -88,6 +119,7 @@ GamePage::GamePage(QWidget *parent) :
         }
     );
 
+    //怪物定时生成
     mon_timer = new QTimer(this);
     mon_timer->start(monInterval);
     connect(mon_timer,&QTimer::timeout,
@@ -95,6 +127,8 @@ GamePage::GamePage(QWidget *parent) :
             generateMonster();
         }
     );
+
+
     ui->skill1->setText("<center><h1>Empty Skill</h1></center>");
     ui->skill2->setText("<center><h1>Empty Skill</h1></center>");
     ui->skill3->setText("<center><h1>Empty Skill</h1></center>");
@@ -187,80 +221,34 @@ void GamePage::paintEvent(QPaintEvent *event)
     }
 
     //绘制上层的怪物
-    for (int i = 0;i < 50;i++){
-        //是否为上层
-        if (mon[i].getPosRand() % 3 == 0){
-            //根据当前帧设置对应图片
-            int temp = mon[i].getPicFrame();
-            temp = temp % 3;
-            if (temp == 0){
-                if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap(":image/gor0"));
-                }
-                else{
-                    mon[i].setPicMonster(QPixmap(":image/gol0"));
-                }
+    for (int i = 0;i < monsterCount;i++){
+        if (mon[i]->getActive() && mon[i]->getPosRand() % 3 == 0){
+            if (mon[i]->getDir() == 0){
+                mon[i]->setPicMonster(mon[i]->getRightpic(mon[i]->getPicFrame() % mon[i]->getFrameSize()));
             }
-            if (temp == 1){
-                if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap(":image/gor1"));
-                }
-                else{
-                    mon[i].setPicMonster(QPixmap(":image/gol1"));
-                }
+            else {
+                mon[i]->setPicMonster(mon[i]->getLeftpic(mon[i]->getPicFrame() % mon[i]->getFrameSize()));
             }
-            if (temp == 2){
-                if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap(":image/gor2"));
-                }
-                else{
-                    mon[i].setPicMonster(QPixmap(":image/gol2"));
-                }
-            }
-            mon[i].setPicFrame(temp + 1);//帧数加一
-            //遍历绘图
-            if (mon[i].getActive()){
-                p.drawPixmap(mon[i].getX(),mon[i].getY(),mon[i].getW(),mon[i].getH(),mon[i].getPicMonster());
-            }
-        }
+            //帧数计数加一
+            int temp = mon[i]->getPicFrame();
+            mon[i]->setPicFrame(temp + 1);
+            p.drawPixmap(mon[i]->getX(),mon[i]->getY(),mon[i]->getW(),mon[i]->getH(),mon[i]->getPicMonster());
+        } 
     }
 
     //绘制中层的怪物
-    for (int i = 0;i < 50;i++){
-        //是否为中层
-        if (mon[i].getPosRand() % 3 == 1){
-            //根据当前帧设置对应图片
-            int temp = mon[i].getPicFrame();
-            temp = temp % 3;
-            if (temp == 0){
-                if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap(":image/gor0"));
-                }
-                else{
-                    mon[i].setPicMonster(QPixmap(":image/gol0"));
-                }
+    for (int i = 0;i < monsterCount;i++){
+        if (mon[i]->getActive() && mon[i]->getPosRand() % 3 == 1){
+            if (mon[i]->getDir() == 0){
+                mon[i]->setPicMonster(mon[i]->getRightpic(mon[i]->getPicFrame() % mon[i]->getFrameSize()));
             }
-            if (temp == 1){
-                if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap(":image/gor1"));
-                }
-                else{
-                    mon[i].setPicMonster(QPixmap(":image/gol1"));
-                }
+            else {
+                mon[i]->setPicMonster(mon[i]->getLeftpic(mon[i]->getPicFrame() % mon[i]->getFrameSize()));
             }
-            if (temp == 2){
-                if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap(":image/gor2"));
-                }
-                else{
-                    mon[i].setPicMonster(QPixmap(":image/gol2"));
-                }
-            }
-            mon[i].setPicFrame(temp + 1);//帧数加一
-            //遍历绘图
-            if (mon[i].getActive()){
-                p.drawPixmap(mon[i].getX(),mon[i].getY(),mon[i].getW(),mon[i].getH(),mon[i].getPicMonster());
-            }
+            //帧数计数加一
+            int temp = mon[i]->getPicFrame();
+            mon[i]->setPicFrame(temp + 1);
+            p.drawPixmap(mon[i]->getX(),mon[i]->getY(),mon[i]->getW(),mon[i]->getH(),mon[i]->getPicMonster());
         }
     }
 
@@ -289,41 +277,18 @@ void GamePage::paintEvent(QPaintEvent *event)
     p.drawPixmap(x,y,100,150,ch);
 
     //绘画底层怪物怪物
-    for (int i = 0;i < 50;i++){
-        //是否为底层
-        if (mon[i].getPosRand() % 3 == 2){
-            //根据当前帧设置对应图片
-            int temp = mon[i].getPicFrame();
-            temp = temp % 3;
-            if (temp == 0){
-                if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap(":image/gor0"));
-                }
-                else{
-                    mon[i].setPicMonster(QPixmap(":image/gol0"));
-                }
+    for (int i = 0;i < monsterCount;i++){
+        if (mon[i]->getActive() && mon[i]->getPosRand() % 3 == 2){
+            if (mon[i]->getDir() == 0){
+                mon[i]->setPicMonster(mon[i]->getRightpic(mon[i]->getPicFrame() % mon[i]->getFrameSize()));
             }
-            if (temp == 1){
-                if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap(":image/gor1"));
-                }
-                else{
-                    mon[i].setPicMonster(QPixmap(":image/gol1"));
-                }
+            else {
+                mon[i]->setPicMonster(mon[i]->getLeftpic(mon[i]->getPicFrame() % mon[i]->getFrameSize()));
             }
-            if (temp == 2){
-                if (mon[i].getDir() == 0){
-                    mon[i].setPicMonster(QPixmap(":image/gor2"));
-                }
-                else{
-                    mon[i].setPicMonster(QPixmap(":image/gol2"));
-                }
-            }
-            mon[i].setPicFrame(temp + 1);//帧数加一
-            //遍历绘图
-            if (mon[i].getActive()){
-                p.drawPixmap(mon[i].getX(),mon[i].getY(),mon[i].getW(),mon[i].getH(),mon[i].getPicMonster());
-            }
+            //帧数计数加一
+            int temp = mon[i]->getPicFrame();
+            mon[i]->setPicFrame(temp + 1);
+            p.drawPixmap(mon[i]->getX(),mon[i]->getY(),mon[i]->getW(),mon[i]->getH(),mon[i]->getPicMonster());
         }
     }
 
@@ -409,7 +374,4 @@ void GamePage::quitAndReset()
 {
     emit quitToMain();
 }
-
-//退出游戏界面并重置游戏要素
-//注意及时更新需要重置的游戏要素
 
