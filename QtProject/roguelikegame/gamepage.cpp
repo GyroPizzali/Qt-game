@@ -5,11 +5,14 @@
 #include "slime.h"
 #include "goblin.h"
 #include "alien.h"
+#include "config.h"
+#include <math.h>
 #include <QPainter>
 #include <QBrush>
 #include <QPen>
 #include <QKeyEvent>
 #include <QDebug>
+#include <QRect>
 #include <QTimer>
 #include <QVector>
 
@@ -63,50 +66,82 @@ GamePage::GamePage(QWidget *parent) :
     paint_timer = new QTimer(this);
     paint_timer->start(50);
     connect(paint_timer,&QTimer::timeout,
-            [=](){
-            //重绘计时器中实现火球位置变化
-            for (int i = 0;i < 20;i++){
-                if (hero.firebag[i].getActive()){
-                    int temp = hero.firebag[i].getX();
-                    if (hero.firebag[i].getDir() == 0)
-                        temp += 20;
-                    else
-                        temp -= 20;
-                    //越界重置
-                    if (temp > 1700 || temp < -100){
-                        hero.firebag[i].unsetActive();
-                    }
-                    hero.firebag[i].setX(temp);
+    [=](){
+        //重绘计时器中实现火球位置变化
+        for (int i = 0;i < 30;i++){
+            if (hero.firebag[i].getActive()){
+                int temp = hero.firebag[i].getX();
+                if (hero.firebag[i].getDir() == 0)
+                    temp += 20;
+                else
+                    temp -= 20;
+                //越界重置
+                if (temp > 1700 || temp < -100){
+                    hero.firebag[i].unsetActive();
                 }
+                hero.firebag[i].setX(temp);
             }
-            //重绘计时器中实现怪物位置变化
-            for (int i = 0;i < monsterCount;i++){
-                if (mon[i]->getActive()){
-                    int temp = mon[i]->getX();
-                    if (mon[i]->getDir() == 0)
-                        mon[i]->setX(temp + 5);
-                    else
-                        mon[i]->setX(temp - 5);
-                    //越界
-                    if (mon[i]->getX() < 0 - mon[i]->getW() || mon[i]->getX() > 1600)
-                        mon[i]->setActive(0);
-                }
-            }
-
-
-            //定时重绘
-            update();
         }
-    );
+        //重绘计时器中实现怪物位置变化
+        for (int i = 0;i < monsterCount;i++){
+            if (mon[i]->getActive()){
+                int temp = mon[i]->getX();
+                if (mon[i]->getDir() == 0)
+                    mon[i]->setX(temp + 5);
+                else
+                    mon[i]->setX(temp - 5);
+                //越界
+                if (mon[i]->getX() < 0 - mon[i]->getW() || mon[i]->getX() > 1600)
+                    mon[i]->setActive(0);
+            }
+        }
+        //定时重绘
+        update();
+    });
 
     //怪物定时生成
     mon_timer = new QTimer(this);
     mon_timer->start(monInterval);
     connect(mon_timer,&QTimer::timeout,
-        [=](){
-            generateMonster();
+    [=](){
+        generateMonster();
+    });
+
+    //定时更新碰撞模型
+    rect_timer = new QTimer(this);
+    rect_timer->start(50);
+    connect(rect_timer,&QTimer::timeout,
+    [=](){
+        //更新人物模型
+        hero.updataRect();
+
+        //更新火球模型并判断火球与怪物的碰撞
+        for (int i = 0;i < 30;i++){
+            if (hero.firebag[i].getActive()){
+                 hero.firebag[i].updateRect();
+                 for (int j = 0;j < monsterCount;j++){
+                     if (mon[j]->getActive() && hero.firebag[i].getPos() == mon[j]->getPosRand() % 3 && fabs(hero.firebag[i].getX() - mon[j]->getX()) <= hero.firebag[i].getW()){
+                         int temp = mon[j]->getHp();
+                         hero.firebag[i].unsetActive();
+                         if (temp >= 1)
+                            mon[j]->setHp(temp - 1);
+                     }
+                 }
+            }
         }
-    );
+
+
+        //更新怪物模型并判断怪物与人物的碰撞
+        for (int i = 0;i < monsterCount;i++){
+            if (mon[i]->getActive()){
+                mon[i]->updataRect();
+                if(mon[i]->getMonsterRect().intersects(hero.hero_rect) && hero.pos == mon[i]->getPosRand() % 3){
+                    hero.hp--;
+                    mon[i]->setActive(0);
+                }
+            }
+        }
+    });
 
 
     ui->skill1->setText("<center><h1>Empty Skill</h1></center>");
@@ -153,13 +188,29 @@ void GamePage::onKeytimer(){
             hero.x -= hero.speed;
     }
 
-    if(pressed_key.contains(Qt::Key_W)){
+    hero.isUp = pressed_key.contains(Qt::Key_W);
+    if(hero.isUp){
         if (hero.y > 650)
             hero.y -= 50;
+        //设置人物所在层数
+        if (hero.y == 650)
+            hero.pos = 0;
+        if (hero.y == 700)
+            hero.pos = 1;
+        if (hero.y == 750)
+            hero.pos = 2;
     }
-    if(pressed_key.contains(Qt::Key_S)){
+    hero.isDown = pressed_key.contains(Qt::Key_S);
+    if(hero.isDown){
         if (hero.y < 750)
             hero.y += 50;
+        //设置人物所在层数
+        if (hero.y == 650)
+            hero.pos = 0;
+        if (hero.y == 700)
+            hero.pos = 1;
+        if (hero.y == 750)
+            hero.pos = 2;
     }
 
     if(pressed_key.contains(Qt::Key_K)){
@@ -215,6 +266,9 @@ void GamePage::paintEvent(QPaintEvent *event)
             //帧数计数加一
             int temp = mon[i]->getPicFrame();
             mon[i]->setPicFrame(temp + 1);
+
+            p.drawRect(mon[i]->getMonsterRect());
+
             p.drawPixmap(mon[i]->getX(),mon[i]->getY(),mon[i]->getW(),mon[i]->getH(),mon[i]->getPicMonster());
         } 
     }
@@ -231,33 +285,30 @@ void GamePage::paintEvent(QPaintEvent *event)
             //帧数计数加一
             int temp = mon[i]->getPicFrame();
             mon[i]->setPicFrame(temp + 1);
+
+            p.drawRect(mon[i]->getMonsterRect());
+
             p.drawPixmap(mon[i]->getX(),mon[i]->getY(),mon[i]->getW(),mon[i]->getH(),mon[i]->getPicMonster());
         }
     }
 
     //绘画角色
     QPixmap ch;
-    if (hero.dir == 0){
-        if (hero.right_forward == 0)
-            ch = QPixmap(":image/r0.png");
-        if (hero.right_forward == 1)
-            ch = QPixmap(":image/r1.png");
-        if (hero.right_forward == 2)
-            ch = QPixmap(":image/r2.png");
-        if (hero.right_forward == 3)
-            ch = QPixmap(":image/r3.png");
+        //优先绘画上下动作
+    if (hero.isUp || hero.isDown){
+        if (hero.isUp)
+            ch = QPixmap(QString(HERO_PATH4));
+        if (hero.isDown)
+            ch = QPixmap(QString(HERO_PATH3));
     }
     else{
-        if (hero.left_forward == 0)
-            ch = QPixmap(":image/l0.png");
-        if (hero.left_forward == 1)
-            ch = QPixmap(":image/l1.png");
-        if (hero.left_forward == 2)
-            ch = QPixmap(":image/l2.png");
-        if (hero.left_forward == 3)
-            ch = QPixmap(":image/l3.png");
+        if (hero.dir)
+            ch = QPixmap(QString(HERO_PATH1).arg(hero.left_forward));
+        else
+            ch = QPixmap(QString(HERO_PATH2).arg(hero.right_forward));
     }
-    p.drawPixmap(hero.x,hero.y,100,150,ch);
+    p.drawRect(hero.hero_rect);
+    p.drawPixmap(hero.x,hero.y,hero.w,hero.h,ch);
 
     //绘画底层怪物怪物
     for (int i = 0;i < monsterCount;i++){
@@ -271,6 +322,9 @@ void GamePage::paintEvent(QPaintEvent *event)
             //帧数计数加一
             int temp = mon[i]->getPicFrame();
             mon[i]->setPicFrame(temp + 1);
+
+            p.drawRect(mon[i]->getMonsterRect());
+
             p.drawPixmap(mon[i]->getX(),mon[i]->getY(),mon[i]->getW(),mon[i]->getH(),mon[i]->getPicMonster());
         }
     }
@@ -290,6 +344,9 @@ void GamePage::paintEvent(QPaintEvent *event)
                     img_fb = QPixmap(":image/fbr.png");
                 else
                     img_fb = QPixmap(":image/fbl.png");
+
+                p.drawRect(hero.firebag[i].getFireballRect());
+
                 p.drawPixmap(hero.firebag[i].getX(),hero.firebag[i].getY(),150,150,img_fb);
             }
         }
@@ -352,6 +409,7 @@ void GamePage::keyPressEvent(QKeyEvent *event)
             hero.firebag[hero.fireballCount % 30].setY(hero.y);
             hero.firebag[hero.fireballCount % 30].setDir(1);
         }
+        hero.firebag[hero.fireballCount % 30].setPos(hero.pos);
         hero.firebag[(hero.fireballCount % 30)].setActive();
         hero.fireballCount++;
         hero.attack = 1;

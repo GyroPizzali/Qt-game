@@ -33,6 +33,7 @@ private:
     QTimer *paint_timer;//重绘计时器
     QTimer *key_timer;//遍历键盘计时器
     QTimer *mon_timer;//定时刷新怪物计时器
+    QTimer *rect_timer;//定时更新rect模型
     QVector<Qt::Key> pressed_key;//存储正在被按下的键
     int mapCounter = 0;//用于决定下一关卡地图
     int difficulty = 0;//难度

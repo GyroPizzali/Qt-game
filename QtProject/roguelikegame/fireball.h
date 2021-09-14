@@ -1,37 +1,54 @@
 #ifndef FIREBALL_H
 #define FIREBALL_H
-
+#include <QRect>
 
 class fireball
 {
 public:
     fireball();
-    int  getX(){return fb_x;}
-    void setX(int a){fb_x = a;}
+    int  getX();
+    void setX(int a);
 
-    int  getY(){return fb_y;}
-    void setY(int a){fb_y = a;}
+    int  getY();
+    void setY(int a);
 
-    int  getV(){return fb_v;}
-    void setV(int a){fb_v = a;}
+    int getW();
+    void setW(int a);
 
-    int getInterval(){return interval;}
-    void setInterval(int a){interval = a;}
+    int getH();
+    void setH(int a);
 
-    bool getDir(){return fb_dir;}
-    void setDir(int a){fb_dir = a;}
+    int  getV();
+    void setV(int a);
 
-    bool getActive(){return active;}
-    void setActive(){active = 1;}
-    void unsetActive(){active = 0;}
+    int getPos();
+    void setPos(int a);
+
+    int getInterval();
+    void setInterval(int a);
+
+    bool getDir();
+    void setDir(int a);
+
+    bool getActive();
+    void setActive();
+    void unsetActive();
+
+    QRect getFireballRect();
+
+    void updateRect();
 
 private:
     int fb_x;
     int fb_y;
+    int fb_w = 150;
+    int fb_h = 150;
     int fb_v;
+    int pos;//火球所在层数
     int interval = 500;//火球攻击间隔
     bool fb_dir;
     bool active = 0;
+    QRect fireball_rect;
 };
 
 #endif // FIREBALL_H

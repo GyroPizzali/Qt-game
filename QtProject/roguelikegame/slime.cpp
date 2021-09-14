@@ -2,8 +2,8 @@
 #include "monster.h"
 Slime::Slime()
 {
-    setLeftpic(0,QPixmap(":image/sll0.png"));
-    setLeftpic(1,QPixmap(":image/sll1.png"));
-    setRightpic(0,QPixmap(":image/slr0.png"));
-    setRightpic(1,QPixmap(":image/slr1.png"));
+    setLeftpic(0,QPixmap(p_l_path.arg(0)));
+    setLeftpic(1,QPixmap(p_l_path.arg(1)));
+    setRightpic(0,QPixmap(p_r_path.arg(0)));
+    setRightpic(1,QPixmap(p_r_path.arg(1)));
 }

@@ -2,13 +2,21 @@
 #define HERO_H
 #include "fireball.h"
 #include "item.h"
+#include <QRect>
 class Hero
 {
 public:
     int hp;//人物血量,实际血量为hp - difficulty
     int x;//人物坐标
     int y;//人物坐标
+    int w = 100;//宽
+    int h = 150;//高
+    int pos;//当前所在层数至上而下0 1 2
+    QRect hero_rect;//人物碰撞模型
+    void updataRect();//更新碰撞模型
     int dir;//人物朝向， 右0左1
+    int isUp;//是否处于向上移动状态
+    int isDown;//是否处于向下移动状态
     int speed;//人物速度
     Item  itembag[3];
 

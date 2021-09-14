@@ -37,5 +37,6 @@
         <file>../image/gor0.png</file>
         <file>../image/gor1.png</file>
         <file>../image/gor2.png</file>
+        <file>../image/back.png</file>
     </qresource>
 </RCC>

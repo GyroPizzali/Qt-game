@@ -1,5 +1,13 @@
 #include "hero.h"
 #include "config.h"
+void Hero::updataRect()
+{
+    hero_rect.setWidth(w);
+    hero_rect.setHeight(h);
+    hero_rect.setX(x);
+    hero_rect.setY(y);
+}
+
 Hero::Hero()
 {
     hp=HERO_HP;

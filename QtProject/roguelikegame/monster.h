@@ -2,6 +2,7 @@
 #define MONSTER_H
 #include <QPixmap>
 #include<QRect>
+#include "config.h"
 class Monster
 {
 private:
@@ -23,57 +24,59 @@ private:
     QPixmap pictureRight[10];//朝右帧数组，不同怪物不同
 public:
     //根据类别改变帧数
-    virtual void resetSize(){}
+    virtual void resetSize();
     //根据类改变图片集
-    virtual void resetPicture(){}
+    virtual void resetPicture();
     //行为函数
-    void death(){
-        active = 0;
-    }
+    void updataRect();//更新碰撞体积，需定时调用
+    void death();//死亡
     //属性访问与设置
-    bool getActive(){return active;}
-    void setActive(bool a){active = a;}
+    bool getActive();
+    void setActive(bool a);
 
-    int  getX(){return x;}
-    void setX(int a){x = a;}
+    int  getX();
+    void setX(int a);
 
-    int  getY(){return y;}
-    void setY(int a){y = a;}
+    int  getY();
+    void setY(int a);
 
-    int  getW(){return w;}
-    void setW(int a){w = a;}
+    int  getW();
+    void setW(int a);
 
-    int  getH(){return h;}
-    void setH(int a){h = a;}
+    int  getH();
+    void setH(int a);
 
-    int getDir(){return dir;}
-    void setDir(int a){dir = a;}
+    int getDir();
+    void setDir(int a);
 
-    int getPosRand(){return posRand;}
-    void setPosRand(int a){posRand = a;}
+    int getPosRand();
+    void setPosRand(int a);
 
-    int  getHp(){return hp;}
-    void setHp(){hp = 1;}
+    int  getHp();
+    void setHp(int a);
 
-    int  getHp_max(){return hp_max;}
-    void setHp_max(int a){hp_max = a;}
+    int  getHp_max();
+    void setHp_max(int a);
 
-    int getFrameSize(){return frameSize;}
-    void setFrameSize(int a){frameSize = a;}
+    int getFrameSize();
+    void setFrameSize(int a);
 
-    QPixmap getPicMonster(){return picMonster;}
-    void setPicMonster(QPixmap a){picMonster = a;}
+    QRect getMonsterRect();
 
-    int  getPicFrame(){return picFrame;}
-    void setPicFrame(int a){picFrame = a;}
+    QPixmap getPicMonster();
+    void setPicMonster(QPixmap a);
 
-    QPixmap getLeftpic(int i){return pictureLeft[i];}
-    void setLeftpic(int i,QPixmap p){pictureLeft[i] =p;}
+    int  getPicFrame();
+    void setPicFrame(int a);
 
-    QPixmap getRightpic(int i){return pictureRight[i];}
-    void setRightpic(int i,QPixmap p){pictureRight[i] =p;}
+    QPixmap getLeftpic(int i);
+    void setLeftpic(int i,QPixmap p);
+
+    QPixmap getRightpic(int i);
+    void setRightpic(int i,QPixmap p);
 
     Monster();
+    void setqrect();
 };
 
 #endif // MONSTER_H
