@@ -47,8 +47,18 @@ QRect fireball::getFireballRect(){return fireball_rect;}
 
 void fireball::updateRect()
 {
-    fireball_rect.setWidth(fb_w);
-    fireball_rect.setHeight(fb_h);
-    fireball_rect.setX(fb_x);
-    fireball_rect.setY(fb_y);
+    if (fb_dir == 1){
+        fireball_rect.setWidth(fb_w - 60);
+        fireball_rect.setHeight(fb_h);
+        fireball_rect.setX(fb_x + 20);
+        fireball_rect.setY(fb_y);
+    }
+
+    else{
+        fireball_rect.setWidth(fb_w - 60);
+        fireball_rect.setHeight(fb_h);
+        fireball_rect.setX(fb_x + 40);
+        fireball_rect.setY(fb_y);
+    }
+
 }

@@ -6,9 +6,9 @@ void Monster::resetPicture(){}
 
 void Monster::updataRect()
 {
-    monster_rect.setWidth(w);
+    monster_rect.setWidth(w - 100);
     monster_rect.setHeight(h);
-    monster_rect.setX(x);
+    monster_rect.setX(x + 50);
     monster_rect.setY(y);
 }
 
