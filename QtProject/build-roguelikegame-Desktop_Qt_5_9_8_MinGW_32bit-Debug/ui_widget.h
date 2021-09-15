@@ -33,7 +33,7 @@ public:
     QVBoxLayout *verticalLayout;
     QPushButton *difButton;
     QPushButton *staButton;
-    QPushButton *recButton;
+    QPushButton *skiButton;
     QPushButton *setButton;
     QPushButton *exiButton;
     QWidget *widget_3;
@@ -88,12 +88,12 @@ public:
 
         verticalLayout->addWidget(staButton);
 
-        recButton = new QPushButton(widget1);
-        recButton->setObjectName(QStringLiteral("recButton"));
-        sizePolicy.setHeightForWidth(recButton->sizePolicy().hasHeightForWidth());
-        recButton->setSizePolicy(sizePolicy);
+        skiButton = new QPushButton(widget1);
+        skiButton->setObjectName(QStringLiteral("skiButton"));
+        sizePolicy.setHeightForWidth(skiButton->sizePolicy().hasHeightForWidth());
+        skiButton->setSizePolicy(sizePolicy);
 
-        verticalLayout->addWidget(recButton);
+        verticalLayout->addWidget(skiButton);
 
         setButton = new QPushButton(widget1);
         setButton->setObjectName(QStringLiteral("setButton"));
@@ -131,7 +131,7 @@ public:
         Widget->setWindowTitle(QApplication::translate("Widget", "Widget", Q_NULLPTR));
         difButton->setText(QApplication::translate("Widget", "Difficulty : easy", Q_NULLPTR));
         staButton->setText(QApplication::translate("Widget", "Start", Q_NULLPTR));
-        recButton->setText(QApplication::translate("Widget", "Record", Q_NULLPTR));
+        skiButton->setText(QApplication::translate("Widget", "skill catalogue", Q_NULLPTR));
         setButton->setText(QApplication::translate("Widget", "Settings", Q_NULLPTR));
         exiButton->setText(QApplication::translate("Widget", "Exit", Q_NULLPTR));
     } // retranslateUi

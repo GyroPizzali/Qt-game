@@ -1,7 +1,8 @@
 #ifndef MONSTER_H
 #define MONSTER_H
 #include <QPixmap>
-#include<QRect>
+#include <QRect>
+#include <QVector>
 #include "config.h"
 class Monster
 {

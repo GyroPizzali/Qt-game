@@ -38,5 +38,10 @@
         <file>../image/gor1.png</file>
         <file>../image/gor2.png</file>
         <file>../image/back.png</file>
+        <file>../image/skill0.png</file>
+        <file>../image/skill1.png</file>
+        <file>../image/skill2.png</file>
+        <file>../image/skill3.png</file>
+        <file>../image/skill4.png</file>
     </qresource>
 </RCC>

@@ -65,7 +65,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="recButton">
+          <widget class="QPushButton" name="skiButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -73,7 +73,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Record</string>
+            <string>skill catalogue</string>
            </property>
           </widget>
          </item>

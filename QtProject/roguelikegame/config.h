@@ -24,6 +24,8 @@
 #define HERO_PATH4  ":image/back.png"
 
 //主角攻击技能
+#define SKILL_PATH  ":image/skill%1.png"
+
 //火球
 #define HERO_FIREBALL_PATH1 ":image/fbl.png"
 #define HERO_FIREBALL_PATH2 ":image/fbr.png"

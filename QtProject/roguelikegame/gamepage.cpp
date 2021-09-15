@@ -6,9 +6,11 @@
 #include "goblin.h"
 #include "alien.h"
 #include "config.h"
+#include "time.h"
 #include <math.h>
 #include <QPainter>
 #include <QBrush>
+#include <QFont>
 #include <QPen>
 #include <QKeyEvent>
 #include <QDebug>
@@ -18,44 +20,62 @@
 
 void GamePage::generateMonster()
 {
-    monsterCount %= 20;
-//    if (mon[monsterCount] != nullptr)
-//        delete mon[monsterCount];
+    //分数未达要求前不断刷新怪物
+    if (killNum < passLine){
+        monsterCount %= 20;
+    //    if (mon[monsterCount] != nullptr)
+    //        delete mon[monsterCount];
 
-    //随机决定怪物类型
-    int type = rand() % 3;
-    if (type == 0)
-        mon[monsterCount] = new Slime;
-    if (type == 1)
-        mon[monsterCount] = new Goblin;
-    if (type == 2)
-        mon[monsterCount] = new Alien;
-    mon[monsterCount]->setActive(1);//激活
-    mon[monsterCount]->resetSize();//根据类型改变属性
-    //随机决定起始位置与方向
-    mon[monsterCount]->setPosRand(rand() % 6);
-    mon[monsterCount]->setW(150);
-    mon[monsterCount]->setH(150);
-    //03、14、25分别对应的底线为800、850、900，对应的y为 底线 - h
-    int pos;
-    if (mon[monsterCount]->getPosRand() % 3 == 0)
-        pos = 800 - mon[monsterCount]->getH();
-    if (mon[monsterCount]->getPosRand() % 3 == 1)
-        pos = 850 - mon[monsterCount]->getH();
-    if (mon[monsterCount]->getPosRand() % 3 == 2)
-        pos = 900 - mon[monsterCount]->getH();
-    mon[monsterCount]->setY(pos);
-    //x根据左右朝向来确定
-    if (mon[monsterCount]->getPosRand() <= 2){
-        mon[monsterCount]->setX(0);
-        mon[monsterCount]->setDir(0);//左侧朝右
-    }
-    else{
-       mon[monsterCount]->setX(1600 - mon[monsterCount]->getW());
-       mon[monsterCount]->setDir(1);//右侧朝左
-    }
+        //随机决定怪物类型
+        int type = rand() % 3;
+        if (type == 0)
+            mon[monsterCount] = new Slime;
+        if (type == 1)
+            mon[monsterCount] = new Goblin;
+        if (type == 2)
+            mon[monsterCount] = new Alien;
+        mon[monsterCount]->setActive(1);//激活
+        mon[monsterCount]->resetSize();//根据类型改变属性
+        //随机决定起始位置与方向
+        mon[monsterCount]->setPosRand(rand() % 6);
+        mon[monsterCount]->setW(150);
+        mon[monsterCount]->setH(150);
+        //03、14、25分别对应的底线为800、850、900，对应的y为 底线 - h
+        int pos;
+        if (mon[monsterCount]->getPosRand() % 3 == 0)
+            pos = 800 - mon[monsterCount]->getH();
+        if (mon[monsterCount]->getPosRand() % 3 == 1)
+            pos = 850 - mon[monsterCount]->getH();
+        if (mon[monsterCount]->getPosRand() % 3 == 2)
+            pos = 900 - mon[monsterCount]->getH();
+        mon[monsterCount]->setY(pos);
+        //x根据左右朝向来确定
+        if (mon[monsterCount]->getPosRand() <= 2){
+            mon[monsterCount]->setX(0);
+            mon[monsterCount]->setDir(0);//左侧朝右
+        }
+        else{
+           mon[monsterCount]->setX(1600 - mon[monsterCount]->getW());
+           mon[monsterCount]->setDir(1);//右侧朝左
+        }
 
-    monsterCount++;//累计产生的怪物数量加一
+        monsterCount++;//累计产生的怪物数量加一
+    }
+}
+
+void GamePage::setRandAward()
+{
+    int r;
+    for (int i = 0;i < 3;){
+        srand( (unsigned)time( NULL ) );
+        r = rand() % 5;
+        if (itemAward.contains(r))
+            continue;
+        else {
+            itemAward.append(r);
+            i++;
+        }
+    }
 }
 
 GamePage::GamePage(QWidget *parent) :
@@ -63,21 +83,35 @@ GamePage::GamePage(QWidget *parent) :
     ui(new Ui::GamePage)
 {
     ui->setupUi(this);
-    ui->skill1->setText("<center><h1>Empty Skill</h1></center>");
-    ui->skill2->setText("<center><h1>Empty Skill</h1></center>");
-    ui->skill3->setText("<center><h1>Empty Skill</h1></center>");
-    ui->skill1->setStyleSheet("QLabel{"
-                              " color : black;"
-                              "text-decoration : underline;"
-                              "}");
-    ui->skill2->setStyleSheet("QLabel{"
-                              " color : black;"
-                              "text-decoration : underline;"
-                              "}");
-    ui->skill3->setStyleSheet("QLabel{"
-                              " color : black;"
-                              "text-decoration : underline;"
-                              "}");
+
+    ui->lcdNumber->setDigitCount(2);
+    ui->lcdNumber->setMode(QLCDNumber::Dec);
+    ui->lcdNumber->setSegmentStyle(QLCDNumber::Flat);
+    ui->lcdNumber->setStyleSheet("QLCDNumber{"
+                                 "color : white;"
+                                 "}");
+
+    //技能图标矩形初始化
+    skillU.setX(0);
+    skillU.setY(60);
+    skillU.setWidth(80);
+    skillU.setHeight(80);
+
+    skillI.setX(90);
+    skillI.setY(60);
+    skillI.setWidth(80);
+    skillI.setHeight(80);
+
+    skillO.setX(180);
+    skillO.setY(60);
+    skillO.setWidth(80);
+    skillO.setHeight(80);
+
+    //设置随机奖励
+    setRandAward();
+    //初始化第一关奖励
+    itemp.setPicItem(QString(SKILL_PATH).arg(itemAward[presentMap]));
+    itemp.updateRect();
 
 
     /*按钮被按下时记录并启动定时器，没有按钮被按下是清楚容器并停止计时器，timeout对应函数中重复检查
@@ -93,21 +127,7 @@ GamePage::GamePage(QWidget *parent) :
     paint_timer->start(50);
     connect(paint_timer,&QTimer::timeout,
     [=](){
-        //重绘计时器中实现火球位置变化
-        for (int i = 0;i < 30;i++){
-            if (hero.firebag[i].getActive()){
-                int temp = hero.firebag[i].getX();
-                if (hero.firebag[i].getDir() == 0)
-                    temp += 20;
-                else
-                    temp -= 20;
-                //越界重置
-                if (temp > 1700 || temp < -100){
-                    hero.firebag[i].unsetActive();
-                }
-                hero.firebag[i].setX(temp);
-            }
-        }
+        ui->lcdNumber->display(killNum);
         //定时重绘
         update();
     });
@@ -146,7 +166,23 @@ GamePage::GamePage(QWidget *parent) :
             }
         }
 
-        //更新火球模型并判断火球与怪物的碰撞
+        //更新火球位置变化
+        for (int i = 0;i < 30;i++){
+            if (hero.firebag[i].getActive()){
+                int temp = hero.firebag[i].getX();
+                if (hero.firebag[i].getDir() == 0)
+                    temp += 20;
+                else
+                    temp -= 20;
+                //越界重置
+                if (temp > 1700 || temp < -100){
+                    hero.firebag[i].unsetActive();
+                }
+                hero.firebag[i].setX(temp);
+            }
+        }
+
+        //更新火球模型并判断火球攻击
         for (int i = 0;i < 30;i++){
             if (hero.firebag[i].getActive()){
                  hero.firebag[i].updateRect();
@@ -157,12 +193,37 @@ GamePage::GamePage(QWidget *parent) :
                      if (mon[j] != nullptr && mon[j]->getActive() && hero.firebag[i].getPos() == (mon[j]->getPosRand() % 3) && hero.firebag[i].getFireballRect().intersects(mon[j]->getMonsterRect())){
                          hero.firebag[i].unsetActive();
                          int temp = mon[j]->getHp();
-                         if (temp == 1)
+                         if (temp == 1){
                              mon[j]->setActive(0);
+                             killNum++;
+                         }
                          else
                              mon[j]->setHp(temp - 1);
                      }
                  }
+            }
+        }
+
+        //判定近战攻击
+        if (hero.isSwordShown){
+            int swordx;
+            if (hero.dir == 0)
+                swordx = hero.x + 50;
+            else
+                swordx = hero.x - 100;
+
+            //构造打击模型
+            QRect swordRect(swordx,hero.y,150,150);
+            for (int i = 0;i < 20;i++){
+                if (mon[i] != nullptr && mon[i]->getActive() && mon[i]->getMonsterRect().intersects(swordRect)){
+                    int temp = mon[i]->getHp();
+                    if (mon[i]->getHp() <= 3){
+                        mon[i]->setActive(0);
+                        killNum += 3;
+                    }
+                    else
+                        mon[i]->setHp(temp - 3);
+                }
             }
         }
 
@@ -175,6 +236,12 @@ GamePage::GamePage(QWidget *parent) :
                     mon[i]->setActive(0);
                 }
             }
+        }
+
+        //判断角色捡起奖励
+        if (hero.itemBag.size() < (presentMap + 1) && killNum >= passLine && (hero.hero_rect.intersects(itemp.getItemRect()))){
+            itemp.hide();
+            hero.itemBag.append(itemp);
         }
     });
 }
@@ -189,14 +256,28 @@ void GamePage::onKeytimer(){
         hero.dir = 0;
         hero.right_forward++;
         hero.right_forward = hero.right_forward % 4;
-        if (hero.x <= 1600)
+        if (hero.x <= 1600 - hero.w)
             hero.x += hero.speed;
-        if (hero.x > 1600){
-            hero.x = 0;
-            int temp = mapCounter;
-            while(mapCounter == temp)//防止下一站地图与本张相同
-                mapCounter = rand() % 4;
-            }
+        if (hero.x == 1600 - hero.w){
+            if(killNum >= 30){
+                //人物位置重置
+                hero.x = 0;
+
+                //背景地图重置
+                int temp = mapCounter;
+                while(mapCounter == temp)//防止下一站地图与本张相同
+                    mapCounter = rand() % 4;
+                //关卡计数加一
+                presentMap++;
+                //得分置零
+                killNum = 0;
+                //当前关卡奖励重置
+                itemp.setPicItem(QString(SKILL_PATH).arg(itemAward[presentMap]));
+                itemp.show();
+                itemp.updateRect();
+
+                }
+        }
     }
     if(pressed_key.contains(Qt::Key_A)){
         hero.dir = 1;
@@ -256,7 +337,30 @@ void GamePage::paintEvent(QPaintEvent *event)
     p.drawPixmap(rect(),bg);
 
     //绘制技能栏背景
-    p.drawPixmap(0,50,400,350,QPixmap(":image/bgskill.png"));
+    QPen skillpen;
+    skillpen.setStyle(Qt::DashDotDotLine);
+    skillpen.setColor(Qt::white);
+    skillpen.setWidth(5);
+    p.setPen(skillpen);
+    p.drawRect(skillU);
+    p.drawRect(skillI);
+    p.drawRect(skillO);
+    if (hero.itemBag.size() >= 1)
+        p.drawPixmap(skillU,hero.itemBag[0].getPicItem());
+    if (hero.itemBag.size() >= 2)
+        p.drawPixmap(skillI,hero.itemBag[1].getPicItem());
+    if (hero.itemBag.size() >= 3)
+        p.drawPixmap(skillO,hero.itemBag[2].getPicItem());
+    p.drawText(skillU,QString("U"));
+    p.drawText(skillI,QString("I"));
+    p.drawText(skillO,QString("O"));
+
+    //绘画过关奖励
+    if (killNum >= passLine && itemp.getIsShow()){
+        p.drawRect(itemp.getItemRect());
+        p.drawPixmap(itemp.getItemRect(),itemp.getPicItem());
+    }
+
     //绘画血条背景
     p.drawPixmap(0,0,(hero.hp - difficulty) * 60,70,QPixmap(":/image/bghp.png"));
 
@@ -290,7 +394,7 @@ void GamePage::paintEvent(QPaintEvent *event)
             //帧数计数加一
             mon[i]->setPicFrame(temp + 1);
 
-            p.drawRect(mon[i]->getMonsterRect());
+//            p.drawRect(mon[i]->getMonsterRect());
 
             p.drawPixmap(mon[i]->getX(),mon[i]->getY(),mon[i]->getW(),mon[i]->getH(),mon[i]->getPicMonster());
         } 
@@ -314,7 +418,7 @@ void GamePage::paintEvent(QPaintEvent *event)
             //帧数计数加一
             mon[i]->setPicFrame(temp + 1);
 
-            p.drawRect(mon[i]->getMonsterRect());
+//            p.drawRect(mon[i]->getMonsterRect());
 
             p.drawPixmap(mon[i]->getX(),mon[i]->getY(),mon[i]->getW(),mon[i]->getH(),mon[i]->getPicMonster());
         }
@@ -335,7 +439,7 @@ void GamePage::paintEvent(QPaintEvent *event)
         else
             ch = QPixmap(QString(HERO_PATH2).arg(hero.right_forward));
     }
-    p.drawRect(hero.hero_rect);
+//    p.drawRect(hero.hero_rect);
     p.drawPixmap(hero.x,hero.y,hero.w,hero.h,ch);
 
     //绘画底层怪物怪物
@@ -356,7 +460,7 @@ void GamePage::paintEvent(QPaintEvent *event)
             //帧数计数加一
             mon[i]->setPicFrame(temp + 1);
 
-            p.drawRect(mon[i]->getMonsterRect());
+//            p.drawRect(mon[i]->getMonsterRect());
 
             p.drawPixmap(mon[i]->getX(),mon[i]->getY(),mon[i]->getW(),mon[i]->getH(),mon[i]->getPicMonster());
         }
@@ -378,7 +482,7 @@ void GamePage::paintEvent(QPaintEvent *event)
                 else
                     img_fb = QPixmap(":image/fbl.png");
 
-                p.drawRect(hero.firebag[i].getFireballRect());
+//                p.drawRect(hero.firebag[i].getFireballRect());
 
                 p.drawPixmap(hero.firebag[i].getX(),hero.firebag[i].getY(),150,150,img_fb);
             }

@@ -3,6 +3,7 @@
 #include "fireball.h"
 #include "item.h"
 #include <QRect>
+#include <QVector>
 class Hero
 {
 public:
@@ -18,7 +19,8 @@ public:
     int isUp;//是否处于向上移动状态
     int isDown;//是否处于向下移动状态
     int speed;//人物速度
-    Item  itembag[3];
+
+    QVector<Item> itemBag;//技能背包
 
     int left_forward = 0;//左走动作帧
     int right_forward = 0;//右走动作帧
@@ -28,6 +30,7 @@ public:
     int fireballCount = 0;//火球计数器
 
     bool isSwordShown = 0;//是否近战攻击
+
 
 
     Hero();
