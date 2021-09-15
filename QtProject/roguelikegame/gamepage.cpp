@@ -18,6 +18,10 @@
 
 void GamePage::generateMonster()
 {
+    monsterCount %= 20;
+//    if (mon[monsterCount] != nullptr)
+//        delete mon[monsterCount];
+
     //随机决定怪物类型
     int type = rand() % 3;
     if (type == 0)
@@ -33,7 +37,13 @@ void GamePage::generateMonster()
     mon[monsterCount]->setW(150);
     mon[monsterCount]->setH(150);
     //03、14、25分别对应的底线为800、850、900，对应的y为 底线 - h
-    int pos = 800 + mon[monsterCount]->getPosRand() % 3 * 50  - mon[monsterCount]->getH();
+    int pos;
+    if (mon[monsterCount]->getPosRand() % 3 == 0)
+        pos = 800 - mon[monsterCount]->getH();
+    if (mon[monsterCount]->getPosRand() % 3 == 1)
+        pos = 850 - mon[monsterCount]->getH();
+    if (mon[monsterCount]->getPosRand() % 3 == 2)
+        pos = 900 - mon[monsterCount]->getH();
     mon[monsterCount]->setY(pos);
     //x根据左右朝向来确定
     if (mon[monsterCount]->getPosRand() <= 2){
@@ -53,6 +63,22 @@ GamePage::GamePage(QWidget *parent) :
     ui(new Ui::GamePage)
 {
     ui->setupUi(this);
+    ui->skill1->setText("<center><h1>Empty Skill</h1></center>");
+    ui->skill2->setText("<center><h1>Empty Skill</h1></center>");
+    ui->skill3->setText("<center><h1>Empty Skill</h1></center>");
+    ui->skill1->setStyleSheet("QLabel{"
+                              " color : black;"
+                              "text-decoration : underline;"
+                              "}");
+    ui->skill2->setStyleSheet("QLabel{"
+                              " color : black;"
+                              "text-decoration : underline;"
+                              "}");
+    ui->skill3->setStyleSheet("QLabel{"
+                              " color : black;"
+                              "text-decoration : underline;"
+                              "}");
+
 
     /*按钮被按下时记录并启动定时器，没有按钮被按下是清楚容器并停止计时器，timeout对应函数中重复检查
     某按键是否处于被按下状态并修改对应参数，与直接在keyPressEvent中检查按钮事件相比，这样的方法
@@ -82,19 +108,6 @@ GamePage::GamePage(QWidget *parent) :
                 hero.firebag[i].setX(temp);
             }
         }
-        //重绘计时器中实现怪物位置变化
-        for (int i = 0;i < monsterCount;i++){
-            if (mon[i]->getActive()){
-                int temp = mon[i]->getX();
-                if (mon[i]->getDir() == 0)
-                    mon[i]->setX(temp + 5);
-                else
-                    mon[i]->setX(temp - 5);
-                //越界
-                if (mon[i]->getX() < 0 - mon[i]->getW() || mon[i]->getX() > 1600)
-                    mon[i]->setActive(0);
-            }
-        }
         //定时重绘
         update();
     });
@@ -115,26 +128,48 @@ GamePage::GamePage(QWidget *parent) :
         //更新人物模型
         hero.updataRect();
 
+        //更新怪物位置变化并更新怪物模型
+        for (int i = 0;i < monsterCount;i++){
+            if (mon[i]->getActive()){
+                int temp = mon[i]->getX();
+                if (mon[i]->getDir() == 0)
+                    mon[i]->setX(temp + 5);
+                else
+                    mon[i]->setX(temp - 5);
+                //越界
+                if (mon[i]->getX() < 0 - mon[i]->getW() || mon[i]->getX() > 1600)
+                    mon[i]->setActive(0);
+                mon[i]->updataRect();
+                mon[i]->updataRect();
+                mon[i]->updataRect();
+                mon[i]->updataRect();
+            }
+        }
+
         //更新火球模型并判断火球与怪物的碰撞
         for (int i = 0;i < 30;i++){
             if (hero.firebag[i].getActive()){
                  hero.firebag[i].updateRect();
-                 for (int j = 0;j < monsterCount;j++){
-                     if (mon[j]->getActive() && hero.firebag[i].getPos() == mon[j]->getPosRand() % 3 && fabs(hero.firebag[i].getX() - mon[j]->getX()) <= hero.firebag[i].getW()){
-                         int temp = mon[j]->getHp();
+                 hero.firebag[i].updateRect();
+                 hero.firebag[i].updateRect();
+                 hero.firebag[i].updateRect();
+                 for (int j = 0;j < 20;j++){
+                     if (mon[j] != nullptr && mon[j]->getActive() && hero.firebag[i].getPos() == (mon[j]->getPosRand() % 3) && hero.firebag[i].getFireballRect().intersects(mon[j]->getMonsterRect())){
                          hero.firebag[i].unsetActive();
-                         if (temp >= 1)
-                            mon[j]->setHp(temp - 1);
+                         int temp = mon[j]->getHp();
+                         if (temp == 1)
+                             mon[j]->setActive(0);
+                         else
+                             mon[j]->setHp(temp - 1);
                      }
                  }
             }
         }
 
 
-        //更新怪物模型并判断怪物与人物的碰撞
+        //判断怪物与人物的碰撞
         for (int i = 0;i < monsterCount;i++){
             if (mon[i]->getActive()){
-                mon[i]->updataRect();
                 if(mon[i]->getMonsterRect().intersects(hero.hero_rect) && hero.pos == mon[i]->getPosRand() % 3){
                     hero.hp--;
                     mon[i]->setActive(0);
@@ -142,23 +177,6 @@ GamePage::GamePage(QWidget *parent) :
             }
         }
     });
-
-
-    ui->skill1->setText("<center><h1>Empty Skill</h1></center>");
-    ui->skill2->setText("<center><h1>Empty Skill</h1></center>");
-    ui->skill3->setText("<center><h1>Empty Skill</h1></center>");
-    ui->skill1->setStyleSheet("QLabel{"
-                              " color : black;"
-                              "text-decoration : underline;"
-                              "}");
-    ui->skill2->setStyleSheet("QLabel{"
-                              " color : black;"
-                              "text-decoration : underline;"
-                              "}");
-    ui->skill3->setStyleSheet("QLabel{"
-                              " color : black;"
-                              "text-decoration : underline;"
-                              "}");
 }
 
 GamePage::~GamePage()
@@ -257,14 +275,19 @@ void GamePage::paintEvent(QPaintEvent *event)
     //绘制上层的怪物
     for (int i = 0;i < monsterCount;i++){
         if (mon[i]->getActive() && mon[i]->getPosRand() % 3 == 0){
+            int temp = mon[i]->getPicFrame() % mon[i]->getFrameSize();
+            //未知bug导致picframe是负数
+            if (temp < 0)
+                temp = 0;
+//            qDebug() << mon[i]->getPicFrame() <<" " << temp <<" " << mon[i]->getFrameSize();
+
             if (mon[i]->getDir() == 0){
-                mon[i]->setPicMonster(mon[i]->getRightpic(mon[i]->getPicFrame() % mon[i]->getFrameSize()));
+                mon[i]->setPicMonster(mon[i]->getRightpic(temp));
             }
             else {
-                mon[i]->setPicMonster(mon[i]->getLeftpic(mon[i]->getPicFrame() % mon[i]->getFrameSize()));
+                mon[i]->setPicMonster(mon[i]->getLeftpic(temp));
             }
             //帧数计数加一
-            int temp = mon[i]->getPicFrame();
             mon[i]->setPicFrame(temp + 1);
 
             p.drawRect(mon[i]->getMonsterRect());
@@ -276,14 +299,19 @@ void GamePage::paintEvent(QPaintEvent *event)
     //绘制中层的怪物
     for (int i = 0;i < monsterCount;i++){
         if (mon[i]->getActive() && mon[i]->getPosRand() % 3 == 1){
+            int temp = mon[i]->getPicFrame() % mon[i]->getFrameSize();
+            //未知bug导致picframe是负数
+            if (temp < 0)
+                temp = 0;
+//            qDebug() << mon[i]->getPicFrame() <<" " << temp <<" " << mon[i]->getFrameSize();
+
             if (mon[i]->getDir() == 0){
-                mon[i]->setPicMonster(mon[i]->getRightpic(mon[i]->getPicFrame() % mon[i]->getFrameSize()));
+                mon[i]->setPicMonster(mon[i]->getRightpic(temp));
             }
             else {
-                mon[i]->setPicMonster(mon[i]->getLeftpic(mon[i]->getPicFrame() % mon[i]->getFrameSize()));
+                mon[i]->setPicMonster(mon[i]->getLeftpic(temp));
             }
             //帧数计数加一
-            int temp = mon[i]->getPicFrame();
             mon[i]->setPicFrame(temp + 1);
 
             p.drawRect(mon[i]->getMonsterRect());
@@ -313,14 +341,19 @@ void GamePage::paintEvent(QPaintEvent *event)
     //绘画底层怪物怪物
     for (int i = 0;i < monsterCount;i++){
         if (mon[i]->getActive() && mon[i]->getPosRand() % 3 == 2){
+            int temp = mon[i]->getPicFrame() % mon[i]->getFrameSize();
+            //未知bug导致picframe是负数
+            if (temp < 0)
+                temp = 0;
+//            qDebug() << mon[i]->getPicFrame() <<" " << temp <<" " << mon[i]->getFrameSize();
+
             if (mon[i]->getDir() == 0){
-                mon[i]->setPicMonster(mon[i]->getRightpic(mon[i]->getPicFrame() % mon[i]->getFrameSize()));
+                mon[i]->setPicMonster(mon[i]->getRightpic(temp));
             }
             else {
-                mon[i]->setPicMonster(mon[i]->getLeftpic(mon[i]->getPicFrame() % mon[i]->getFrameSize()));
+                mon[i]->setPicMonster(mon[i]->getLeftpic(temp));
             }
             //帧数计数加一
-            int temp = mon[i]->getPicFrame();
             mon[i]->setPicFrame(temp + 1);
 
             p.drawRect(mon[i]->getMonsterRect());
@@ -338,7 +371,7 @@ void GamePage::paintEvent(QPaintEvent *event)
     QPixmap img_fb;
     if (hero.attack){
         //便利火球数组输出当前场上的火球
-        for (int i = 0;i < 20;i++){
+        for (int i = 0;i < 30;i++){
             if (hero.firebag[i].getActive()){
                 if (hero.firebag[i].getDir() == 0)
                     img_fb = QPixmap(":image/fbr.png");

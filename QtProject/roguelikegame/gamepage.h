@@ -40,7 +40,7 @@ private:
 
     Hero hero;//主角
 
-    Monster *mon[2000];//怪物基类指针
+    Monster *mon[20];//怪物基类指针
     int monsterCount = 0;//怪物计数器
     int monInterval = 3000;//怪物刷新的时间间隔
 

@@ -9,8 +9,8 @@ private:
     bool active = 0;//是否处于显示状态
     int x;//坐标
     int y;//坐标
-    int w;//宽度
-    int h;//高度
+    int w = 150;//宽度
+    int h = 150;//高度
     int dir;//朝向，右0左1
     int posRand;//怪物位置随机初始化，0~5分别对应左上、左中、左下、右上、右中、右下；
     int hp = 5;//当前血量
@@ -19,7 +19,7 @@ private:
     QRect monster_rect;//怪物碰撞体积
     QPixmap picMonster;//当前帧图片
 
-    int frameSize;//动画帧数，不同怪物不同
+    int frameSize = 0;//动画帧数，不同怪物不同
     QPixmap pictureLeft[10];//朝左帧数组，不同怪物不同
     QPixmap pictureRight[10];//朝右帧数组，不同怪物不同
 public:
