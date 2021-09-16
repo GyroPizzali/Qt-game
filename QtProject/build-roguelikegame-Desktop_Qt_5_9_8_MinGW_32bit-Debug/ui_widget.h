@@ -34,7 +34,6 @@ public:
     QPushButton *difButton;
     QPushButton *staButton;
     QPushButton *skiButton;
-    QPushButton *setButton;
     QPushButton *exiButton;
     QWidget *widget_3;
 
@@ -95,13 +94,6 @@ public:
 
         verticalLayout->addWidget(skiButton);
 
-        setButton = new QPushButton(widget1);
-        setButton->setObjectName(QStringLiteral("setButton"));
-        sizePolicy.setHeightForWidth(setButton->sizePolicy().hasHeightForWidth());
-        setButton->setSizePolicy(sizePolicy);
-
-        verticalLayout->addWidget(setButton);
-
         exiButton = new QPushButton(widget1);
         exiButton->setObjectName(QStringLiteral("exiButton"));
         sizePolicy.setHeightForWidth(exiButton->sizePolicy().hasHeightForWidth());
@@ -132,7 +124,6 @@ public:
         difButton->setText(QApplication::translate("Widget", "Difficulty : easy", Q_NULLPTR));
         staButton->setText(QApplication::translate("Widget", "Start", Q_NULLPTR));
         skiButton->setText(QApplication::translate("Widget", "catalogue", Q_NULLPTR));
-        setButton->setText(QApplication::translate("Widget", "Settings", Q_NULLPTR));
         exiButton->setText(QApplication::translate("Widget", "Exit", Q_NULLPTR));
     } // retranslateUi
 
