@@ -201,7 +201,7 @@ GamePage::GamePage(QWidget *parent) :
                  hero.firebag[i].updateRect();
                  hero.firebag[i].updateRect();
                  hero.firebag[i].updateRect();
-                 for (int j = 0;j < pointerSize;j++){
+                 for (int j = 0;j < monsterCount;j++){
                      if (mon[j] != nullptr && mon[j]->getActive() && hero.firebag[i].getPos() == (mon[j]->getPosRand() % 3) && hero.firebag[i].getFireballRect().intersects(mon[j]->getMonsterRect())){
                          //判断穿透技能的效果
                          if (hero.skillRelease[4] == 0)
@@ -228,7 +228,7 @@ GamePage::GamePage(QWidget *parent) :
 
             //构造打击模型
             QRect swordRect(swordx,hero.y,150,150);
-            for (int i = 0;i < pointerSize;i++){
+            for (int i = 0;i < monsterCount;i++){
                 if (mon[i] != nullptr && mon[i]->getActive() && mon[i]->getMonsterRect().intersects(swordRect) && hero.pos == mon[i]->getPosRand() % 3){
                     int temp = mon[i]->getHp();
                     if (mon[i]->getHp() <= 3){
@@ -243,7 +243,7 @@ GamePage::GamePage(QWidget *parent) :
 
 
         //判定技能1
-        for (int i = 0;i < pointerSize;i++){
+        for (int i = 0;i < monsterCount;i++){
             if (mon[i] != nullptr && mon[i]->getActive() && hero.skillRelease[1]){
                 int temp = mon[i]->getHp();
                 if (temp == 1){

@@ -2,6 +2,17 @@
 #include "monster.h"
 void Goblin::resetSize(){setFrameSize(3);}
 
+void Goblin::resetHp()
+{
+    setHp(5);
+    setHp_max(5);
+}
+
+void Goblin::resetSpeed()
+{
+    setSpeed(5);
+}
+
 Goblin::Goblin()
 {
     setLeftpic(0,QPixmap(p_l_path.arg(0)));

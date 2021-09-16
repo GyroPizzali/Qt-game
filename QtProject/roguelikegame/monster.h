@@ -7,7 +7,7 @@
 class Monster
 {
 private:
-    bool active = 0;//是否处于显示状态
+    int active = 0;//是否处于显示状态
     int x;//坐标
     int y;//坐标
     int w = 150;//宽度
@@ -38,8 +38,8 @@ public:
     void updataRect();//更新碰撞体积，需定时调用
     void death();//死亡
     //属性访问与设置
-    bool getActive();
-    void setActive(bool a);
+    int getActive();
+    void setActive(int a);
 
     int  getX();
     void setX(int a);

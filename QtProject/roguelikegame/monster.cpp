@@ -20,9 +20,9 @@ void Monster::death(){
     active = 0;
 }
 
-bool Monster::getActive(){return active;}
+int Monster::getActive(){return active;}
 
-void Monster::setActive(bool a){active = a;}
+void Monster::setActive(int a){active = a;}
 
 int Monster::getX(){return x;}
 

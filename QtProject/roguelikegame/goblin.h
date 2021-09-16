@@ -12,9 +12,8 @@ class Goblin : public Monster
 public:
     //根据类别进行属性的调整
     void resetSize();
-    void resetHp(){setHp(5);
-                   setHp_max(5);}
-    void resetSpeed(){setSpeed(5);}
+    void resetHp();
+    void resetSpeed();
     Goblin();
 };
 
