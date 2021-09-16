@@ -131,7 +131,7 @@ public:
         Widget->setWindowTitle(QApplication::translate("Widget", "Widget", Q_NULLPTR));
         difButton->setText(QApplication::translate("Widget", "Difficulty : easy", Q_NULLPTR));
         staButton->setText(QApplication::translate("Widget", "Start", Q_NULLPTR));
-        skiButton->setText(QApplication::translate("Widget", "skill catalogue", Q_NULLPTR));
+        skiButton->setText(QApplication::translate("Widget", "catalogue", Q_NULLPTR));
         setButton->setText(QApplication::translate("Widget", "Settings", Q_NULLPTR));
         exiButton->setText(QApplication::translate("Widget", "Exit", Q_NULLPTR));
     } // retranslateUi

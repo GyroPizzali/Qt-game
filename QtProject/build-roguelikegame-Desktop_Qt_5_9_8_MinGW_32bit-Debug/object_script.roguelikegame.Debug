@@ -9,7 +9,9 @@ INPUT(
 ./debug\goblin.o
 ./debug\alien.o
 ./debug\hero.o
+./debug\catalogue.o
 ./debug\qrc_image.o
 ./debug\moc_widget.o
 ./debug\moc_gamepage.o
+./debug\moc_catalogue.o
 );

@@ -37,6 +37,7 @@ private:
     QVector<Qt::Key> pressed_key;//存储正在被按下的键
     int mapCounter = 0;//用于决定下一关卡地图
     int presentMap = 0;//关卡计数器
+    int presenMonster = 0;//当前地图剩余怪物
     int difficulty = 0;//难度
 
     Hero hero;//主角

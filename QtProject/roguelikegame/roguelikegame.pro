@@ -34,7 +34,8 @@ SOURCES += \
     slime.cpp \
     goblin.cpp \
     alien.cpp \
-    hero.cpp
+    hero.cpp \
+    catalogue.cpp
 
 HEADERS += \
         widget.h \
@@ -46,7 +47,8 @@ HEADERS += \
     slime.h \
     goblin.h \
     alien.h \
-    hero.h
+    hero.h \
+    catalogue.h
 
 FORMS += \
         widget.ui \

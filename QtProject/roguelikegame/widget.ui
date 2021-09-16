@@ -73,7 +73,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>skill catalogue</string>
+            <string>catalogue</string>
            </property>
           </widget>
          </item>

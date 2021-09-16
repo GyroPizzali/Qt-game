@@ -51,5 +51,7 @@
         <file>../image/s1n5.png</file>
         <file>../image/s4l.png</file>
         <file>../image/s4r.png</file>
+        <file>../image/preview.png</file>
+        <file>../image/gameover.png</file>
     </qresource>
 </RCC>

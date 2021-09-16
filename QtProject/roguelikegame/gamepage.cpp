@@ -10,7 +10,6 @@
 #include <math.h>
 #include <QPainter>
 #include <QBrush>
-#include <QFont>
 #include <QPen>
 #include <QKeyEvent>
 #include <QDebug>
@@ -20,12 +19,10 @@
 
 void GamePage::generateMonster()
 {
-
+    //根据关卡数目逐渐减少刷怪的时间间隔
     //分数未达要求前不断刷新怪物
     if (killNum < passLine){
         monsterCount %= pointerSize;
-    //    if (mon[monsterCount] != nullptr)
-    //        delete mon[monsterCount];
 
         //随机决定怪物类型
         int type = rand() % 3;
@@ -36,7 +33,15 @@ void GamePage::generateMonster()
         if (type == 2)
             mon[monsterCount] = new Alien;
         mon[monsterCount]->setActive(1);//激活
-        mon[monsterCount]->resetSize();//根据类型改变属性
+        //根据类型改变属性
+        mon[monsterCount]->resetSize();
+        mon[monsterCount]->resetHp();
+        mon[monsterCount]->resetSpeed();
+        //根据关卡数增加血量,每过一关血量加一
+        int temphp = mon[monsterCount]->getHp();
+        int temphpmax = mon[monsterCount]->getHp();
+        mon[monsterCount]->setHp_max(temphpmax + presentMap);
+        mon[monsterCount]->setHp(temphp + presentMap);
         //随机决定起始位置与方向
         mon[monsterCount]->setPosRand(rand() % 6);
         mon[monsterCount]->setW(150);
@@ -91,6 +96,7 @@ GamePage::GamePage(QWidget *parent) :
     ui->lcdNumber->setStyleSheet("QLCDNumber{"
                                  "color : white;"
                                  "}");
+    this->setWindowTitle("Sword and Magic");
 
     //技能图标矩形初始化
     skillU.setX(0);
@@ -223,7 +229,7 @@ GamePage::GamePage(QWidget *parent) :
             //构造打击模型
             QRect swordRect(swordx,hero.y,150,150);
             for (int i = 0;i < pointerSize;i++){
-                if (mon[i] != nullptr && mon[i]->getActive() && mon[i]->getMonsterRect().intersects(swordRect)){
+                if (mon[i] != nullptr && mon[i]->getActive() && mon[i]->getMonsterRect().intersects(swordRect) && hero.pos == mon[i]->getPosRand() % 3){
                     int temp = mon[i]->getHp();
                     if (mon[i]->getHp() <= 3){
                         mon[i]->setActive(0);
@@ -258,8 +264,8 @@ GamePage::GamePage(QWidget *parent) :
                     //技能2的无敌判定
                     if (hero.skillRelease[2] == 0){
                         hero.hp--;
+                        mon[i]->setActive(0);
                     }
-                    mon[i]->setActive(0);
                 }
             }
         }
@@ -284,11 +290,19 @@ void GamePage::onKeytimer(){
         hero.right_forward = hero.right_forward % 4;
         if (hero.x <= 1600 - hero.w)
             hero.x += hero.speed;
-        if (hero.x == 1600 - hero.w){
-            if(killNum >= 30){
+        if (hero.x > 1600 - hero.w){
+            //求出场上剩余怪物数量
+            for (int i = 0;i < monsterCount;i++){
+                if (mon[i]->getActive())
+                    presenMonster++;
+            }
+            //积分足够且没有剩余怪物时
+            if(killNum >= passLine && presenMonster == 0){
                 //人物位置重置
                 hero.x = 0;
-
+                //怪物刷新间隔减短
+                if (monInterval > 200)
+                    monInterval -= 100;
                 //背景地图重置
                 int temp = mapCounter;
                 while(mapCounter == temp)//防止下一站地图与本张相同
@@ -305,6 +319,7 @@ void GamePage::onKeytimer(){
                     itemp.updateRect();
                 }
             }
+            presenMonster = 0;
         }
     }
     if (pressed_key.contains(Qt::Key_A)){
@@ -701,21 +716,34 @@ void GamePage::paintEvent(QPaintEvent *event)
     for (int i = 0;i < monsterCount;i++){
         if (mon[i]->getActive()){
             //绘制边框
+            float temp = mon[i]->getHp();
+            temp = temp / mon[i]->getHp_max();
+            temp *= 150;
             pen.setWidth(5);
             pen.setColor(Qt::black);
             p.setPen(pen);
-            p.drawRect(mon[i]->getX(),mon[i]->getY() - 20,mon[i]->getW(),20);
-            //绘制血条
-            pen.setWidth(10);
-            if (hero.skillRelease[0])
-                pen.setColor(Qt::blue);
-            else
-                pen.setColor(Qt::green);
-            p.setPen(pen);
-            int hp_len = (mon[i]->getW() - 10 ) / mon[i]->getHp_max() * mon[i]->getHp();
-            if(mon[i]->getHp())
-                p.drawRect(mon[i]->getX() + 5,mon[i]->getY() - 15,hp_len,10);
+            p.drawRect(mon[i]->getX(),mon[i]->getY() - 20,temp,20);
+            QBrush bru1(Qt::green);
+            QBrush bru2(Qt::blue);
+            if (hero.skillRelease[0] == 0)
+                p.setBrush(bru1);
+            else {
+                p.setBrush(bru2);
+            }
+            p.drawRect(mon[i]->getX(),mon[i]->getY() - 20,temp,20);
+
+//            //绘制血条
+//            pen.setWidth(10);
+//            if (hero.skillRelease[0])
+//                pen.setColor(Qt::blue);
+//            else
+//                pen.setColor(Qt::green);
+//            p.setPen(pen);
+//            int hp_len = (mon[i]->getW() - 10 ) / mon[i]->getHp_max() * mon[i]->getHp();
+//            if(mon[i]->getHp())
+//                p.drawRect(mon[i]->getX() + 5,mon[i]->getY() - 15,hp_len,10);
         }
+
     }
 
     //绘画技能特效
@@ -723,6 +751,9 @@ void GamePage::paintEvent(QPaintEvent *event)
         p.drawPixmap(-250,-100,2200,1400,QPixmap(QString(SKILL_PATH1).arg(hero.skillRelease[1] % 6)));
     }
 
+    //绘制死亡界面
+    if (hero.hp - difficulty == 0)
+        p.drawPixmap(rect(),QPixmap(":image/gameover.png"));
 
 }
 

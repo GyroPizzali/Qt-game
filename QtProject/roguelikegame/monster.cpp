@@ -4,6 +4,10 @@ void Monster::resetSize(){}
 
 void Monster::resetPicture(){}
 
+void Monster::resetSpeed(){}
+
+void Monster::resetHp(){}
+
 void Monster::updataRect()
 {
     monster_rect.setWidth(w - 100);

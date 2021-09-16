@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "gamepage.h"
+#include "catalogue.h"
 namespace Ui {
 class Widget;
 }
@@ -22,9 +23,12 @@ private slots:
     void on_exiButton_released();
 
     void on_staButton_released();
+    void on_skiButton_released();
+
 private:
     int dif = 1;//难度选择
     GamePage *g = new GamePage;//游戏窗口实例化
+    Catalogue c;//技能目录界面
     friend class GamePage;
     void returnToMain();//从游戏界面退回到主界面
     //传递主窗口的选择信息

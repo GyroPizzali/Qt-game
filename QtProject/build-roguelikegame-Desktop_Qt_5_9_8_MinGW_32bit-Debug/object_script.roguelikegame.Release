@@ -9,7 +9,9 @@ INPUT(
 ./release\goblin.o
 ./release\alien.o
 ./release\hero.o
+./release\catalogue.o
 ./release\qrc_image.o
 ./release\moc_widget.o
 ./release\moc_gamepage.o
+./release\moc_catalogue.o
 );

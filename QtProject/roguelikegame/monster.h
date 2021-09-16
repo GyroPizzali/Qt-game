@@ -30,10 +30,10 @@ public:
     //根据类改变图片集
     virtual void resetPicture();
 
-//    //根据类别改变速度
-//    virtual void resetSpeed();
-//    //根据类别改变血量
-//    virtual void resetHp();
+    //根据类别改变速度
+    virtual void resetSpeed();
+    //根据类别改变血量
+    virtual void resetHp();
     //行为函数
     void updataRect();//更新碰撞体积，需定时调用
     void death();//死亡
@@ -54,6 +54,7 @@ public:
     void setH(int a);
 
     int getSpeed();
+    void setSpeed(int a){speed = a;}
 
     int getDir();
     void setDir(int a);

@@ -11,6 +11,9 @@ class Alien : public Monster
 public:
     //根据类别进行属性的调整
     void resetSize();
+    void resetHp(){setHp(4);
+                   setHp_max(4);}
+    void resetSpeed(){setSpeed(6);}
     Alien();
 };
 

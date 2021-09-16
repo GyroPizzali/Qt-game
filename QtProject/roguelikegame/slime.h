@@ -13,6 +13,9 @@ public:
     Slime();
     //根据类别进行属性的调整
     void resetSize(){setFrameSize(2);}
+    void resetHp(){setHp(8);
+                   setHp_max(8);}
+    void resetSpeed(){setSpeed(4);}
 private:
 
 };

@@ -70,3 +70,8 @@ void Widget::returnToMain()
     connect(g,&GamePage::quitToMain,this,&Widget::returnToMain);
 }
 
+
+void Widget::on_skiButton_released()
+{
+    c.show();
+}
