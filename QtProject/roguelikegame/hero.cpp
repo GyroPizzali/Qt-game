@@ -15,4 +15,7 @@ Hero::Hero()
     x=0;
     y=700;
     dir=0;
+    for (int i = 0;i < 5;i++){
+        skillRelease[i] = 0;
+    }
 }
