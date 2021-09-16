@@ -43,5 +43,13 @@
         <file>../image/skill2.png</file>
         <file>../image/skill3.png</file>
         <file>../image/skill4.png</file>
+        <file>../image/s1n0.png</file>
+        <file>../image/s1n1.png</file>
+        <file>../image/s1n2.png</file>
+        <file>../image/s1n3.png</file>
+        <file>../image/s1n4.png</file>
+        <file>../image/s1n5.png</file>
+        <file>../image/s4l.png</file>
+        <file>../image/s4r.png</file>
     </qresource>
 </RCC>

@@ -20,9 +20,10 @@
 
 void GamePage::generateMonster()
 {
+
     //分数未达要求前不断刷新怪物
     if (killNum < passLine){
-        monsterCount %= 20;
+        monsterCount %= pointerSize;
     //    if (mon[monsterCount] != nullptr)
     //        delete mon[monsterCount];
 
@@ -72,7 +73,7 @@ void GamePage::setRandAward()
         if (itemAward.contains(r))
             continue;
         else {
-            itemAward.append(r);
+            itemAward.push_back(r);
             i++;
         }
     }
@@ -111,6 +112,7 @@ GamePage::GamePage(QWidget *parent) :
     setRandAward();
     //初始化第一关奖励
     itemp.setPicItem(QString(SKILL_PATH).arg(itemAward[presentMap]));
+    itemp.setN(itemAward[presentMap]);
     itemp.updateRect();
 
 
@@ -150,20 +152,24 @@ GamePage::GamePage(QWidget *parent) :
 
         //更新怪物位置变化并更新怪物模型
         for (int i = 0;i < monsterCount;i++){
-            if (mon[i]->getActive()){
-                int temp = mon[i]->getX();
-                if (mon[i]->getDir() == 0)
-                    mon[i]->setX(temp + 5);
-                else
-                    mon[i]->setX(temp - 5);
-                //越界
-                if (mon[i]->getX() < 0 - mon[i]->getW() || mon[i]->getX() > 1600)
-                    mon[i]->setActive(0);
+            //判定技能0
+            if (hero.skillRelease[0] == 0){
+                if (mon[i]->getActive()){
+                    int temp = mon[i]->getX();
+                    if (mon[i]->getDir() == 0)
+                        mon[i]->setX(temp + mon[i]->getSpeed());
+                    else
+                        mon[i]->setX(temp - mon[i]->getSpeed());
+                    //越界
+                    if (mon[i]->getX() < 0 - mon[i]->getW() || mon[i]->getX() > 1600)
+                        mon[i]->setActive(0);
+                }
                 mon[i]->updataRect();
                 mon[i]->updataRect();
                 mon[i]->updataRect();
                 mon[i]->updataRect();
             }
+
         }
 
         //更新火球位置变化
@@ -171,9 +177,9 @@ GamePage::GamePage(QWidget *parent) :
             if (hero.firebag[i].getActive()){
                 int temp = hero.firebag[i].getX();
                 if (hero.firebag[i].getDir() == 0)
-                    temp += 20;
+                    temp += hero.firebag[i].getV();
                 else
-                    temp -= 20;
+                    temp -= hero.firebag[i].getV();
                 //越界重置
                 if (temp > 1700 || temp < -100){
                     hero.firebag[i].unsetActive();
@@ -189,9 +195,11 @@ GamePage::GamePage(QWidget *parent) :
                  hero.firebag[i].updateRect();
                  hero.firebag[i].updateRect();
                  hero.firebag[i].updateRect();
-                 for (int j = 0;j < 20;j++){
+                 for (int j = 0;j < pointerSize;j++){
                      if (mon[j] != nullptr && mon[j]->getActive() && hero.firebag[i].getPos() == (mon[j]->getPosRand() % 3) && hero.firebag[i].getFireballRect().intersects(mon[j]->getMonsterRect())){
-                         hero.firebag[i].unsetActive();
+                         //判断穿透技能的效果
+                         if (hero.skillRelease[4] == 0)
+                            hero.firebag[i].unsetActive();
                          int temp = mon[j]->getHp();
                          if (temp == 1){
                              mon[j]->setActive(0);
@@ -214,7 +222,7 @@ GamePage::GamePage(QWidget *parent) :
 
             //构造打击模型
             QRect swordRect(swordx,hero.y,150,150);
-            for (int i = 0;i < 20;i++){
+            for (int i = 0;i < pointerSize;i++){
                 if (mon[i] != nullptr && mon[i]->getActive() && mon[i]->getMonsterRect().intersects(swordRect)){
                     int temp = mon[i]->getHp();
                     if (mon[i]->getHp() <= 3){
@@ -228,11 +236,29 @@ GamePage::GamePage(QWidget *parent) :
         }
 
 
+        //判定技能1
+        for (int i = 0;i < pointerSize;i++){
+            if (mon[i] != nullptr && mon[i]->getActive() && hero.skillRelease[1]){
+                int temp = mon[i]->getHp();
+                if (temp == 1){
+                    mon[i]->setActive(0);
+                    killNum++;
+                }
+                else {
+                    mon[i]->setHp(temp - 1);
+                }
+            }
+        }
+
+
         //判断怪物与人物的碰撞
         for (int i = 0;i < monsterCount;i++){
             if (mon[i]->getActive()){
                 if(mon[i]->getMonsterRect().intersects(hero.hero_rect) && hero.pos == mon[i]->getPosRand() % 3){
-                    hero.hp--;
+                    //技能2的无敌判定
+                    if (hero.skillRelease[2] == 0){
+                        hero.hp--;
+                    }
                     mon[i]->setActive(0);
                 }
             }
@@ -241,7 +267,7 @@ GamePage::GamePage(QWidget *parent) :
         //判断角色捡起奖励
         if (hero.itemBag.size() < (presentMap + 1) && killNum >= passLine && (hero.hero_rect.intersects(itemp.getItemRect()))){
             itemp.hide();
-            hero.itemBag.append(itemp);
+            hero.itemBag.push_back(itemp);
         }
     });
 }
@@ -252,7 +278,7 @@ GamePage::~GamePage()
 }
 
 void GamePage::onKeytimer(){
-    if(pressed_key.contains(Qt::Key_D)){
+    if (pressed_key.contains(Qt::Key_D)){
         hero.dir = 0;
         hero.right_forward++;
         hero.right_forward = hero.right_forward % 4;
@@ -272,14 +298,16 @@ void GamePage::onKeytimer(){
                 //得分置零
                 killNum = 0;
                 //当前关卡奖励重置
-                itemp.setPicItem(QString(SKILL_PATH).arg(itemAward[presentMap]));
-                itemp.show();
-                itemp.updateRect();
-
+                if (presentMap <= 2){
+                    itemp.setPicItem(QString(SKILL_PATH).arg(itemAward[presentMap]));
+                    itemp.setN(itemAward[presentMap]);
+                    itemp.show();
+                    itemp.updateRect();
                 }
+            }
         }
     }
-    if(pressed_key.contains(Qt::Key_A)){
+    if (pressed_key.contains(Qt::Key_A)){
         hero.dir = 1;
         hero.left_forward++;
         hero.left_forward = hero.left_forward % 4;
@@ -288,7 +316,7 @@ void GamePage::onKeytimer(){
     }
 
     hero.isUp = pressed_key.contains(Qt::Key_W);
-    if(hero.isUp){
+    if (hero.isUp){
         if (hero.y > 650)
             hero.y -= 50;
         //设置人物所在层数
@@ -300,7 +328,7 @@ void GamePage::onKeytimer(){
             hero.pos = 2;
     }
     hero.isDown = pressed_key.contains(Qt::Key_S);
-    if(hero.isDown){
+    if (hero.isDown){
         if (hero.y < 750)
             hero.y += 50;
         //设置人物所在层数
@@ -312,9 +340,157 @@ void GamePage::onKeytimer(){
             hero.pos = 2;
     }
 
-    if(pressed_key.contains(Qt::Key_K)){
+    if (pressed_key.contains(Qt::Key_K)){
         hero.isSwordShown = 1;
     }
+
+    //U技能判定
+    if (pressed_key.contains(Qt::Key_U)){
+        if (hero.itemBag.size() >= 1){
+            hero.skillRelease[hero.itemBag[0].getN()]++;
+            if (hero.itemBag[0].getN() == 2){
+                if (hero.dir == 0)
+                    hero.x += 200;
+                else
+                    hero.x -= 200;
+                if (hero.x > 1600 - hero.w)
+                    hero.x = 1600 - hero.w;
+                if (hero.x < 0)
+                    hero.x = 0;
+            }
+            if (hero.itemBag[0].getN() == 3){
+                for (int i = 0;i < 30;i++)
+                    hero.firebag[i].setV(80);
+            }
+        }
+    }
+    else{
+        if (hero.itemBag.size() >= 1){
+            hero.skillRelease[hero.itemBag[0].getN()] = 0;
+            if (hero.itemBag[0].getN() == 3){
+                hero.skillRelease[3] = 0;
+                for (int i = 0;i < 30;i++)
+                    hero.firebag[i].setV(20);
+            }
+        }
+
+    }
+
+    //I技能判定
+    if (pressed_key.contains(Qt::Key_I)){
+        if (hero.itemBag.size() >= 2){
+            hero.skillRelease[hero.itemBag[1].getN()]++;
+            if (hero.itemBag[1].getN() == 2){
+                if (hero.dir == 0)
+                    hero.x += 200;
+                else
+                    hero.x -= 200;
+                if (hero.x > 1600 - hero.w)
+                    hero.x = 1600 - hero.w;
+                if (hero.x < 0)
+                    hero.x = 0;
+            }
+            if (hero.itemBag[1].getN() == 3){
+                for (int i = 0;i < 30;i++)
+                    hero.firebag[i].setV(80);
+            }
+        }
+    }
+    else{
+        if (hero.itemBag.size() >= 2){
+            hero.skillRelease[hero.itemBag[1].getN()] = 0;
+            if (hero.itemBag[1].getN() == 3){
+                hero.skillRelease[3] = 0;
+                for (int i = 0;i < 30;i++)
+                    hero.firebag[i].setV(20);
+            }
+        }
+
+    }
+
+    //O技能判定
+    if (pressed_key.contains(Qt::Key_O)){
+        if (hero.itemBag.size() >= 3){
+            hero.skillRelease[hero.itemBag[2].getN()]++;
+            if (hero.itemBag[2].getN() == 2){
+                if (hero.dir == 0)
+                    hero.x += 200;
+                else
+                    hero.x -= 200;
+                if (hero.x > 1600 - hero.w)
+                    hero.x = 1600 - hero.w;
+                if (hero.x < 0)
+                    hero.x = 0;
+            }
+            if (hero.itemBag[2].getN() == 3){
+                for (int i = 0;i < 30;i++)
+                    hero.firebag[i].setV(80);
+            }
+        }
+    }
+    else{
+        if (hero.itemBag.size() >= 3){
+            hero.skillRelease[hero.itemBag[2].getN()] = 0;
+            if (hero.itemBag[2].getN() == 3){
+                hero.skillRelease[3] = 0;
+                for (int i = 0;i < 30;i++)
+                    hero.firebag[i].setV(20);
+            }
+        }
+    }
+
+
+//以下为演示外挂模式！
+//    //U技能判定
+//    if (pressed_key.contains(Qt::Key_U)){
+//        hero.skillRelease[0]++;
+//    }
+//    else{
+//        hero.skillRelease[0] = 0;
+//    }
+
+//    //I技能判定
+//    if(pressed_key.contains(Qt::Key_I)){
+//        hero.skillRelease[1]++;
+//    }
+//    else {
+//        hero.skillRelease[1] = 0;
+//    }
+
+//    //O技能判定
+//    if (pressed_key.contains(Qt::Key_O)){
+//        hero.skillRelease[2] = 1;
+//        if (hero.dir == 0)
+//            hero.x += 200;
+//        else
+//            hero.x -= 200;
+//        if (hero.x > 1600 - hero.w)
+//            hero.x = 1600 - hero.w;
+//        if (hero.x < 0)
+//            hero.x = 0;
+//    }
+//    else{
+//        hero.skillRelease[2] = 0;
+//    }
+//    //P技能判定
+//    if (pressed_key.contains(Qt::Key_P)){
+//        hero.skillRelease[3] = 1;
+//        for (int i = 0;i < 30;i++)
+//            hero.firebag[i].setV(80);
+//    }
+//    else {
+//        hero.skillRelease[3] = 0;
+//        for (int i = 0;i < 30;i++)
+//            hero.firebag[i].setV(20);
+//    }
+//    //L技能判定
+//    if (pressed_key.contains(Qt::Key_L)){
+//        hero.skillRelease[4] = 1;
+//    }
+//    else {
+//        hero.skillRelease[4] = 0;
+//    }
+
 
 }
 
@@ -365,7 +541,7 @@ void GamePage::paintEvent(QPaintEvent *event)
     p.drawPixmap(0,0,(hero.hp - difficulty) * 60,70,QPixmap(":/image/bghp.png"));
 
     //绘画第一关的介绍
-    if (mapCounter == 0){
+    if (mapCounter == 0 && presentMap == 0){
         ui->introduce->setText(QString("<center><h1>"
                                        "press WASD to move <br><br>"
                                        "prese J/K to attack <br><br>"
@@ -391,8 +567,10 @@ void GamePage::paintEvent(QPaintEvent *event)
             else {
                 mon[i]->setPicMonster(mon[i]->getLeftpic(temp));
             }
-            //帧数计数加一
-            mon[i]->setPicFrame(temp + 1);
+
+            //帧数计数加一，判定技能0
+            if (hero.skillRelease[0] == 0)
+                mon[i]->setPicFrame(temp + 1);
 
 //            p.drawRect(mon[i]->getMonsterRect());
 
@@ -415,8 +593,10 @@ void GamePage::paintEvent(QPaintEvent *event)
             else {
                 mon[i]->setPicMonster(mon[i]->getLeftpic(temp));
             }
-            //帧数计数加一
-            mon[i]->setPicFrame(temp + 1);
+
+            //帧数计数加一，判定技能0
+            if (hero.skillRelease[0] == 0)
+                mon[i]->setPicFrame(temp + 1);
 
 //            p.drawRect(mon[i]->getMonsterRect());
 
@@ -457,8 +637,10 @@ void GamePage::paintEvent(QPaintEvent *event)
             else {
                 mon[i]->setPicMonster(mon[i]->getLeftpic(temp));
             }
-            //帧数计数加一
-            mon[i]->setPicFrame(temp + 1);
+
+            //帧数计数加一，判定技能0
+            if (hero.skillRelease[0] == 0)
+                mon[i]->setPicFrame(temp + 1);
 
 //            p.drawRect(mon[i]->getMonsterRect());
 
@@ -477,10 +659,20 @@ void GamePage::paintEvent(QPaintEvent *event)
         //便利火球数组输出当前场上的火球
         for (int i = 0;i < 30;i++){
             if (hero.firebag[i].getActive()){
-                if (hero.firebag[i].getDir() == 0)
-                    img_fb = QPixmap(":image/fbr.png");
-                else
-                    img_fb = QPixmap(":image/fbl.png");
+                if (hero.skillRelease[4] == 0){
+                    if (hero.firebag[i].getDir() == 0)
+                        img_fb = QPixmap(":image/fbr.png");
+                    else
+                        img_fb = QPixmap(":image/fbl.png");
+                }
+                //若技能4生效
+                else {
+                    if (hero.firebag[i].getDir() == 0)
+                        img_fb = QPixmap(":image/s4r.png");
+                    else
+                        img_fb = QPixmap(":image/s4l.png");
+                }
+
 
 //                p.drawRect(hero.firebag[i].getFireballRect());
 
@@ -515,12 +707,20 @@ void GamePage::paintEvent(QPaintEvent *event)
             p.drawRect(mon[i]->getX(),mon[i]->getY() - 20,mon[i]->getW(),20);
             //绘制血条
             pen.setWidth(10);
-            pen.setColor(Qt::green);
+            if (hero.skillRelease[0])
+                pen.setColor(Qt::blue);
+            else
+                pen.setColor(Qt::green);
             p.setPen(pen);
             int hp_len = (mon[i]->getW() - 10 ) / mon[i]->getHp_max() * mon[i]->getHp();
             if(mon[i]->getHp())
                 p.drawRect(mon[i]->getX() + 5,mon[i]->getY() - 15,hp_len,10);
         }
+    }
+
+    //绘画技能特效
+    if (hero.skillRelease[1]){
+        p.drawPixmap(-250,-100,2200,1400,QPixmap(QString(SKILL_PATH1).arg(hero.skillRelease[1] % 6)));
     }
 
 
@@ -536,20 +736,61 @@ void GamePage::keyPressEvent(QKeyEvent *event)
 
     //攻击键
     if(pressed_key.contains(Qt::Key_J)){
-        if (hero.dir == 0){
-            hero.firebag[hero.fireballCount % 30].setX(hero.x+50);
-            hero.firebag[hero.fireballCount % 30].setY(hero.y);
-            hero.firebag[hero.fireballCount % 30].setDir(0);
+        if (hero.skillRelease[3] == 0){
+            if (hero.dir == 0){
+                hero.firebag[hero.fireballCount % 30].setX(hero.x+50);
+                hero.firebag[hero.fireballCount % 30].setY(hero.y);
+                hero.firebag[hero.fireballCount % 30].setDir(0);
+            }
+            else{
+                hero.firebag[hero.fireballCount % 30].setX(hero.x-100);
+                hero.firebag[hero.fireballCount % 30].setY(hero.y);
+                hero.firebag[hero.fireballCount % 30].setDir(1);
+            }
+            hero.firebag[hero.fireballCount % 30].setPos(hero.pos);
+            hero.firebag[(hero.fireballCount % 30)].setActive();
+            hero.fireballCount++;
+            hero.attack = 1;
         }
-        else{
-            hero.firebag[hero.fireballCount % 30].setX(hero.x-100);
-            hero.firebag[hero.fireballCount % 30].setY(hero.y);
-            hero.firebag[hero.fireballCount % 30].setDir(1);
+        //判定技能3
+        else {
+            if (hero.dir == 0){
+                hero.firebag[hero.fireballCount % 30].setX(hero.x+50);
+                hero.firebag[hero.fireballCount % 30].setY(650);
+                hero.firebag[hero.fireballCount % 30].setDir(0);
+
+                hero.firebag[(hero.fireballCount + 1) % 30].setX(hero.x+50);
+                hero.firebag[(hero.fireballCount + 1) % 30].setY(700);
+                hero.firebag[(hero.fireballCount + 1) % 30].setDir(0);
+
+                hero.firebag[(hero.fireballCount + 2) % 30].setX(hero.x+50);
+                hero.firebag[(hero.fireballCount + 2) % 30].setY(750);
+                hero.firebag[(hero.fireballCount + 2) % 30].setDir(0);
+            }
+            else{
+                hero.firebag[hero.fireballCount % 30].setX(hero.x-100);
+                hero.firebag[hero.fireballCount % 30].setY(650);
+                hero.firebag[hero.fireballCount % 30].setDir(1);
+
+                hero.firebag[(hero.fireballCount + 1) % 30].setX(hero.x-100);
+                hero.firebag[(hero.fireballCount + 1) % 30].setY(700);
+                hero.firebag[(hero.fireballCount + 1) % 30].setDir(1);
+
+                hero.firebag[(hero.fireballCount + 2) % 30].setX(hero.x-100);
+                hero.firebag[(hero.fireballCount + 2) % 30].setY(750);
+                hero.firebag[(hero.fireballCount + 2) % 30].setDir(1);
+            }
+            hero.firebag[hero.fireballCount % 30].setPos(0);
+            hero.firebag[(hero.fireballCount + 1) % 30].setPos(1);
+            hero.firebag[(hero.fireballCount + 2) % 30].setPos(2);
+
+            hero.firebag[(hero.fireballCount % 30)].setActive();
+            hero.firebag[(hero.fireballCount + 1) % 30].setActive();
+            hero.firebag[(hero.fireballCount + 2) % 30].setActive();
+
+            hero.fireballCount += 3;
+            hero.attack = 1;
         }
-        hero.firebag[hero.fireballCount % 30].setPos(hero.pos);
-        hero.firebag[(hero.fireballCount % 30)].setActive();
-        hero.fireballCount++;
-        hero.attack = 1;
     }
 
     //退回到主界面并重置所有gamepage元素

@@ -23,6 +23,9 @@ public:
     int getH(){return h;}
     void setH(int a){h = a;}
 
+    int getN(){return n;}
+    void setN(int a){n = a;}
+
     int getIsShow(){return isShown;}
     void show(){isShown = 1;}
     void hide(){isShown = 0;}
@@ -37,9 +40,10 @@ private:
     int y = 760;
     int w = 80;
     int h = 80;
-    int isShown = 1;
-    QPixmap picItem;
-    QRect item_rect;
+    int n;//技能编号
+    int isShown = 1;//显示
+    QPixmap picItem;//图片
+    QRect item_rect;//碰撞体积
 };
 
 #endif // ITEM_H

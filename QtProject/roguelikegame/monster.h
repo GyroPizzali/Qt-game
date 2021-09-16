@@ -12,6 +12,7 @@ private:
     int y;//坐标
     int w = 150;//宽度
     int h = 150;//高度
+    int speed = 5;//速度
     int dir;//朝向，右0左1
     int posRand;//怪物位置随机初始化，0~5分别对应左上、左中、左下、右上、右中、右下；
     int hp = 5;//当前血量
@@ -28,6 +29,11 @@ public:
     virtual void resetSize();
     //根据类改变图片集
     virtual void resetPicture();
+
+//    //根据类别改变速度
+//    virtual void resetSpeed();
+//    //根据类别改变血量
+//    virtual void resetHp();
     //行为函数
     void updataRect();//更新碰撞体积，需定时调用
     void death();//死亡
@@ -46,6 +52,8 @@ public:
 
     int  getH();
     void setH(int a);
+
+    int getSpeed();
 
     int getDir();
     void setDir(int a);

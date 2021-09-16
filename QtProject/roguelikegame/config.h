@@ -26,6 +26,9 @@
 //主角攻击技能
 #define SKILL_PATH  ":image/skill%1.png"
 
+//技能特效资源
+#define SKILL_PATH1 ":image/s1n%1.png"
+
 //火球
 #define HERO_FIREBALL_PATH1 ":image/fbl.png"
 #define HERO_FIREBALL_PATH2 ":image/fbr.png"

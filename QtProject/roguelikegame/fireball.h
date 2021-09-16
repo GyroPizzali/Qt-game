@@ -43,7 +43,7 @@ private:
     int fb_y;
     int fb_w = 150;
     int fb_h = 150;
-    int fb_v;
+    int fb_v = 20;
     int pos;//火球所在层数
     int interval = 500;//火球攻击间隔
     bool fb_dir;

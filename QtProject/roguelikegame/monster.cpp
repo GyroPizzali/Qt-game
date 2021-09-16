@@ -36,6 +36,8 @@ int Monster::getH(){return h;}
 
 void Monster::setH(int a){h = a;}
 
+int Monster::getSpeed(){return speed;}
+
 int Monster::getDir(){return dir;}
 
 void Monster::setDir(int a){dir = a;}

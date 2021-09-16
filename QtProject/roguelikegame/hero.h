@@ -22,6 +22,8 @@ public:
 
     QVector<Item> itemBag;//技能背包
 
+    int skillRelease[5];//五个技能是否处于释放状态
+
     int left_forward = 0;//左走动作帧
     int right_forward = 0;//右走动作帧
 
