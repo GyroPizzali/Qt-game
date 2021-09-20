@@ -17,6 +17,7 @@ class GamePage : public QWidget
     Q_OBJECT
 public:
     void setDif(int x){difficulty = x;};//在widget中作为友元函数来修改本类中的难度
+    void startGenerateMonster(){startGenerate = 1;};//在widget中作为友元函数修改本类中的startGenerate
     void generateMonster();//怪物生成函数
     void setRandAward();//设置三种随机奖励
     explicit GamePage(QWidget *parent = nullptr);
@@ -35,6 +36,7 @@ private:
     QTimer *mon_timer;//定时刷新怪物计时器
     QTimer *rect_timer;//定时更新rect模型
     QVector<Qt::Key> pressed_key;//存储正在被按下的键
+    int startGenerate = 0;
     int mapCounter = 0;//用于决定下一关卡地图
     int presentMap = 0;//关卡计数器
     int presenMonster = 0;//当前地图剩余怪物

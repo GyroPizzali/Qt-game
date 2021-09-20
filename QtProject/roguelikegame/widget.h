@@ -19,9 +19,7 @@ protected:
     void paintEvent(QPaintEvent *event);
 private slots:
     void on_difButton_released();
-
     void on_exiButton_released();
-
     void on_staButton_released();
     void on_skiButton_released();
 
@@ -33,7 +31,7 @@ private:
     void returnToMain();//从游戏界面退回到主界面
     //传递主窗口的选择信息
     void sendInf(){
-        g->setDif(dif - 1);//将难度传递给游戏界面
+        g->setDif(dif % 3 - 1);//将难度传递给游戏界面
     }
     Ui::Widget *ui;
 };

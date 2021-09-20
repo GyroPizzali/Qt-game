@@ -19,54 +19,58 @@
 
 void GamePage::generateMonster()
 {
-    //根据关卡数目逐渐减少刷怪的时间间隔
-    //分数未达要求前不断刷新怪物
-    if (killNum < passLine){
-        monsterCount %= pointerSize;
+    //游戏是否已经开始
+    if(startGenerate){
+        //根据关卡数目逐渐减少刷怪的时间间隔
+        //分数未达要求前不断刷新怪物
+        if (killNum < passLine){
+            monsterCount %= pointerSize;
 
-        //随机决定怪物类型
-        int type = rand() % 3;
-        if (type == 0)
-            mon[monsterCount] = new Slime;
-        if (type == 1)
-            mon[monsterCount] = new Goblin;
-        if (type == 2)
-            mon[monsterCount] = new Alien;
-        mon[monsterCount]->setActive(1);//激活
-        //根据类型改变属性
-        mon[monsterCount]->resetSize();
-        mon[monsterCount]->resetHp();
-        mon[monsterCount]->resetSpeed();
-        //根据关卡数增加血量,每过一关血量加一
-        int temphp = mon[monsterCount]->getHp();
-        int temphpmax = mon[monsterCount]->getHp();
-        mon[monsterCount]->setHp_max(temphpmax + presentMap);
-        mon[monsterCount]->setHp(temphp + presentMap);
-        //随机决定起始位置与方向
-        mon[monsterCount]->setPosRand(rand() % 6);
-        mon[monsterCount]->setW(150);
-        mon[monsterCount]->setH(150);
-        //03、14、25分别对应的底线为800、850、900，对应的y为 底线 - h
-        int pos;
-        if (mon[monsterCount]->getPosRand() % 3 == 0)
-            pos = 800 - mon[monsterCount]->getH();
-        if (mon[monsterCount]->getPosRand() % 3 == 1)
-            pos = 850 - mon[monsterCount]->getH();
-        if (mon[monsterCount]->getPosRand() % 3 == 2)
-            pos = 900 - mon[monsterCount]->getH();
-        mon[monsterCount]->setY(pos);
-        //x根据左右朝向来确定
-        if (mon[monsterCount]->getPosRand() <= 2){
-            mon[monsterCount]->setX(0);
-            mon[monsterCount]->setDir(0);//左侧朝右
-        }
-        else{
-           mon[monsterCount]->setX(1600 - mon[monsterCount]->getW());
-           mon[monsterCount]->setDir(1);//右侧朝左
-        }
+            //随机决定怪物类型
+            int type = rand() % 3;
+            if (type == 0)
+                mon[monsterCount] = new Slime;
+            if (type == 1)
+                mon[monsterCount] = new Goblin;
+            if (type == 2)
+                mon[monsterCount] = new Alien;
+            mon[monsterCount]->setActive(1);//激活
+            //根据类型改变属性
+            mon[monsterCount]->resetSize();
+            mon[monsterCount]->resetHp();
+            mon[monsterCount]->resetSpeed();
+            //根据关卡数增加血量,每过一关血量加一
+            int temphp = mon[monsterCount]->getHp();
+            int temphpmax = mon[monsterCount]->getHp();
+            mon[monsterCount]->setHp_max(temphpmax + presentMap);
+            mon[monsterCount]->setHp(temphp + presentMap);
+            //随机决定起始位置与方向
+            mon[monsterCount]->setPosRand(rand() % 6);
+            mon[monsterCount]->setW(150);
+            mon[monsterCount]->setH(150);
+            //03、14、25分别对应的底线为800、850、900，对应的y为 底线 - h
+            int pos;
+            if (mon[monsterCount]->getPosRand() % 3 == 0)
+                pos = 800 - mon[monsterCount]->getH();
+            if (mon[monsterCount]->getPosRand() % 3 == 1)
+                pos = 850 - mon[monsterCount]->getH();
+            if (mon[monsterCount]->getPosRand() % 3 == 2)
+                pos = 900 - mon[monsterCount]->getH();
+            mon[monsterCount]->setY(pos);
+            //x根据左右朝向来确定
+            if (mon[monsterCount]->getPosRand() <= 2){
+                mon[monsterCount]->setX(0);
+                mon[monsterCount]->setDir(0);//左侧朝右
+            }
+            else{
+               mon[monsterCount]->setX(1600 - mon[monsterCount]->getW());
+               mon[monsterCount]->setDir(1);//右侧朝左
+            }
 
-        monsterCount++;//累计产生的怪物数量加一
+            monsterCount++;//累计产生的怪物数量加一
+        }
     }
+
 }
 
 void GamePage::setRandAward()
@@ -179,6 +183,11 @@ GamePage::GamePage(QWidget *parent) :
         }
 
         //更新火球位置变化
+        //技能3判断
+        if (hero.skillRelease[3] == 1){
+            for (int i = 0;i < 30;i++)
+                hero.firebag[i].setV(80);
+        }
         for (int i = 0;i < 30;i++){
             if (hero.firebag[i].getActive()){
                 int temp = hero.firebag[i].getX();
@@ -373,22 +382,13 @@ void GamePage::onKeytimer(){
                 if (hero.x < 0)
                     hero.x = 0;
             }
-            if (hero.itemBag[0].getN() == 3){
-                for (int i = 0;i < 30;i++)
-                    hero.firebag[i].setV(80);
-            }
         }
     }
-    else{
+    if (pressed_key.contains(Qt::Key_U) == 0){
         if (hero.itemBag.size() >= 1){
-            hero.skillRelease[hero.itemBag[0].getN()] = 0;
-            if (hero.itemBag[0].getN() == 3){
-                hero.skillRelease[3] = 0;
-                for (int i = 0;i < 30;i++)
-                    hero.firebag[i].setV(20);
-            }
+            if (hero.itemBag[0].getN() <= 2)
+                hero.skillRelease[hero.itemBag[0].getN()] = 0;
         }
-
     }
 
     //I技能判定
@@ -405,22 +405,13 @@ void GamePage::onKeytimer(){
                 if (hero.x < 0)
                     hero.x = 0;
             }
-            if (hero.itemBag[1].getN() == 3){
-                for (int i = 0;i < 30;i++)
-                    hero.firebag[i].setV(80);
-            }
         }
     }
-    else{
+    if (pressed_key.contains(Qt::Key_I) == 0){
         if (hero.itemBag.size() >= 2){
-            hero.skillRelease[hero.itemBag[1].getN()] = 0;
-            if (hero.itemBag[1].getN() == 3){
-                hero.skillRelease[3] = 0;
-                for (int i = 0;i < 30;i++)
-                    hero.firebag[i].setV(20);
-            }
+            if (hero.itemBag[1].getN() <= 2)
+                hero.skillRelease[hero.itemBag[1].getN()] = 0;
         }
-
     }
 
     //O技能判定
@@ -437,20 +428,12 @@ void GamePage::onKeytimer(){
                 if (hero.x < 0)
                     hero.x = 0;
             }
-            if (hero.itemBag[2].getN() == 3){
-                for (int i = 0;i < 30;i++)
-                    hero.firebag[i].setV(80);
-            }
         }
     }
-    else{
+    if (pressed_key.contains(Qt::Key_O) == 0){
         if (hero.itemBag.size() >= 3){
-            hero.skillRelease[hero.itemBag[2].getN()] = 0;
-            if (hero.itemBag[2].getN() == 3){
-                hero.skillRelease[3] = 0;
-                for (int i = 0;i < 30;i++)
-                    hero.firebag[i].setV(20);
-            }
+            if (hero.itemBag[2].getN() <= 2)
+                hero.skillRelease[hero.itemBag[2].getN()] = 0;
         }
     }
 
@@ -532,10 +515,24 @@ void GamePage::paintEvent(QPaintEvent *event)
     skillpen.setStyle(Qt::DashDotDotLine);
     skillpen.setColor(Qt::white);
     skillpen.setWidth(5);
+
+    if (hero.itemBag.size() >= 1 && hero.skillRelease[hero.itemBag[0].getN()])
+        skillpen.setColor(Qt::red);
     p.setPen(skillpen);
     p.drawRect(skillU);
+
+    skillpen.setColor(Qt::white);
+    if (hero.itemBag.size() >= 2 && hero.skillRelease[hero.itemBag[1].getN()])
+        skillpen.setColor(Qt::red);
+    p.setPen(skillpen);
     p.drawRect(skillI);
+
+    skillpen.setColor(Qt::white);
+    if (hero.itemBag.size() >= 3 && hero.skillRelease[hero.itemBag[2].getN()])
+        skillpen.setColor(Qt::red);
+    p.setPen(skillpen);
     p.drawRect(skillO);
+
     if (hero.itemBag.size() >= 1)
         p.drawPixmap(skillU,hero.itemBag[0].getPicItem());
     if (hero.itemBag.size() >= 2)

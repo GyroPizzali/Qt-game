@@ -57,6 +57,7 @@ void Widget::on_staButton_released()
     g->show();
     emit sendInf();
     this->hide();
+    g->startGenerateMonster();
 }
 
 void Widget::returnToMain()
